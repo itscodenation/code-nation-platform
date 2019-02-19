@@ -1,3 +1,12 @@
+
+# Getting set up
+
+You will need to log in to Firebase Tools. If you are using Docker, just run `script/setup-firebase`. If not, run `yarn run firebase login`.
+
+Then you will want to run `yarn run firebase use --add <YOUR_FIREBASE_DEV_APP_NAME>`.
+
+# Create React App
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
