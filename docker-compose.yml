@@ -2,10 +2,20 @@ version: "3.7"
 services:
   app:
     command: yarn start
-    image: node:8
+    image: node:10
     ports:
       - 3000:3000
     volumes:
       - .:/app
-      - ./docker/app/config:/root/.config
     working_dir: /app
+  functions:
+    command: yarn --cwd functions run firebase serve --host 0.0.0.0
+    image: node:6
+    ports:
+      - 5000:5000
+    volumes:
+      - .:/app
+      - firebase-config:/root/.config
+    working_dir: /app
+volumes:
+  ? firebase-config

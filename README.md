@@ -1,9 +1,38 @@
 
 # Getting set up
 
-You will need to log in to Firebase Tools. If you are using Docker, just run `script/setup-firebase`. If not, run `yarn run firebase login`.
+The easiest way to run the application locally for development
+is to use Docker. This is especially highly recommended because
+the local emulator for Firebase functions needs to run in Node 6, which is
+quite old; the build tooling for the client-side application can happily run
+in Node 10. With Docker, providing each service with the appropriate Node
+version is quite painless.
 
-Then you will want to run `yarn run firebase use --add <YOUR_FIREBASE_DEV_APP_NAME>`.
+If you don’t already have Docker, you can install it using [these instructions](https://docs.docker.com/install/). Look in the left sidebar for your OS; the instructions are a bit TL;DR.
+
+Once Docker is installed, run this to bootstrap the containers:
+
+```sh
+$ docker-compose up --no-start
+```
+
+Then run this to install the client-side and functions dependencies
+respectively:
+
+```sh
+$ docker-compose run --rm app yarn
+$ docker-compose run --rm functions yarn --cwd functions
+```
+
+Finally, you will need to add your Firebase credentials to the local
+project configuration. If you have not created a Firebase app to use for
+development, [do that now](https://console.firebase.google.com/).
+
+Then run this:
+
+```sh
+$ script/firebase-setup <YOUR-FIREBASE-APP-NAME>
+```
 
 # Create React App
 
