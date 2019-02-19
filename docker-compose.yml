@@ -2,9 +2,10 @@ version: "3.7"
 services:
   app:
     command: yarn start
-    image: node:10
+    image: node:8
     ports:
       - 3000:3000
     volumes:
       - .:/app
+      - ./docker/app/config:/root/.config
     working_dir: /app

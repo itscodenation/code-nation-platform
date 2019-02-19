@@ -1,0 +1,3 @@
+#!/bin/bash
+
+docker-compose run --rm -p 9005:9005 app bash -c "yarn run firebase login && chown -Rv ${UID}:${UID} /root/.config/configstore"
