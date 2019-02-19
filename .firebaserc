@@ -1,1 +1,6 @@
-{}
+{
+  "projects": {
+    "development": "code-nation-platform-dev",
+    "default": "code-nation-platform-dev"
+  }
+}
