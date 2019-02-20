@@ -2,6 +2,8 @@ import loadjs from 'loadjs';
 import once from 'lodash-es/once';
 
 const GAPI_SCRIPT_URL = 'https://apis.google.com/js/api.js';
+const API_KEY = process.env.REACT_APP_FIREBASE_API_KEY;
+const CLIENT_ID = process.env.REACT_APP_FIREBASE_CLIENT_ID;
 const SCOPES = [
   'https://www.googleapis.com/auth/classroom.courses.readonly',
   'https://www.googleapis.com/auth/classroom.coursework.students',
@@ -42,14 +44,14 @@ export async function loadAndConfigureGapi() {
   });
 
   await gapi.client.init({
-    apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
-    clientId: process.env.REACT_APP_FIREBASE_CLIENT_ID,
+    apiKey: API_KEY,
+    clientId: CLIENT_ID,
     discoveryDocs: DISCOVERY_DOCS,
     scopes: SCOPES.join(' '),
   });
 
   await gapi.auth2.init({
-    client_id: process.env.REACT_APP_FIREBASE_CLIENT_ID,
+    client_id: CLIENT_ID,
     scope: SCOPES.join(' '),
     ux_mode: 'popup',
   });
