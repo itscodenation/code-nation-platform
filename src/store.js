@@ -1,9 +1,10 @@
 import {createContext} from 'react';
+import {useImmerReducer} from 'use-immer';
 
 export const StateContext = createContext();
 export const DispatchContext = createContext();
 
-export const initialState = {
+const initialState = {
   clients: {
     google: {
       ready: false,
@@ -11,7 +12,7 @@ export const initialState = {
   },
 };
 
-export function reducer(state, {type, payload = {}}) {
+function reducer(state, {type, payload = {}}) {
   switch (type) {
     case 'google-ready':
       state.clients.google.ready = true;
@@ -19,4 +20,8 @@ export function reducer(state, {type, payload = {}}) {
     default:
       break;
   }
+}
+
+export function useReducer() {
+  return useImmerReducer(reducer, initialState);
 }

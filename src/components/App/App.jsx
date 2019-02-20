@@ -6,14 +6,13 @@ import {useImmerReducer} from 'use-immer';
 import {init as initGoogle} from '../../clients/google';
 import {
   DispatchContext,
-  initialState,
-  reducer,
   StateContext,
+  useReducer,
 } from '../../store';
 import Main from '../Main';
 
 export default function App() {
-  const [state, dispatch] = useImmerReducer(reducer, initialState);
+  const [state, dispatch] = useReducer();
 
   useAsyncEffect(async () => {
     await initGoogle();
