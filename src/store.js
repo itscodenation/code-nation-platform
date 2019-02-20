@@ -10,12 +10,18 @@ const initialState = {
       ready: false,
     },
   },
+  session: {
+    firebaseUser: null,
+  }
 };
 
 function reducer(state, {type, payload = {}}) {
   switch (type) {
     case 'google-ready':
       state.clients.google.ready = true;
+      break;
+    case 'user-signed-in':
+      state.session.firebaseUser = payload.user;
       break;
     default:
       break;

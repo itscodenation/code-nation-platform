@@ -5,10 +5,11 @@ import React, {useContext} from 'react';
 import {signInWithGoogle} from '../../clients/firebase';
 
 import styles from './Main.module.css';
-import {StateContext} from '../../store';
+import {StateContext, DispatchContext} from '../../store';
 
 export default function Main() {
   const state = useContext(StateContext);
+  const dispatch = useContext(DispatchContext);
 
   return (
     <div className={styles.container}>
@@ -18,7 +19,12 @@ export default function Main() {
             <Form>
               <p>Sign in with your Google account to get started:</p>
               <Form.Group>
-                <Button onClick={signInWithGoogle}>Log in</Button>
+                <Button
+                  onClick={async() => {
+                    const {user} = await signInWithGoogle();
+                    dispatch({type: 'user-signed-in', payload: {user}});
+                  }}
+                >Log in</Button>
               </Form.Group>
             </Form>
           ) : (
