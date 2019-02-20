@@ -3,6 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@firebase/app-types": "^0.3.4",
+    "firebase": "^5.8.3",
+    "loadjs": "^3.5.5",
+    "lodash-es": "^4.17.11",
     "react": "^16.8.2",
     "react-bootstrap": "^1.0.0-beta.5",
     "react-dom": "^16.8.2",
@@ -23,9 +27,5 @@
     "not ie <= 11",
     "not op_mini all"
   ],
-  "devDependencies": {
-    "eslint": "^5.14.1",
-    "eslint-plugin-import": "^2.16.0",
-    "eslint-plugin-react": "^7.12.4"
-  }
+  "devDependencies": {}
 }
