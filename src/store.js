@@ -1,4 +1,4 @@
-import {createContext} from 'react';
+import {createContext, useContext} from 'react';
 import {useImmerReducer} from 'use-immer';
 
 export const StateContext = createContext();
@@ -30,4 +30,18 @@ function reducer(state, {type, payload = {}}) {
 
 export function useReducer() {
   return useImmerReducer(reducer, initialState);
+}
+
+export function useStateContext() {
+  return useContext(StateContext);
+}
+
+export function useDispatchContext() {
+  return useContext(DispatchContext);
+}
+
+export function useStoreContexts() {
+  const state = useStateContext();
+  const dispatch = useDispatchContext();
+  return {dispatch, state};
 }

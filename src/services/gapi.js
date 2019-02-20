@@ -55,6 +55,10 @@ export async function loadAndConfigureGapi() {
     scope: SCOPES.join(' '),
     ux_mode: 'popup',
   });
+
+  await gapi.auth2.getAuthInstance().signOut();
+
+  return gapi;
 }
 
 export function getGapiSync() {

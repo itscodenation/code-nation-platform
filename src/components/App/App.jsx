@@ -1,7 +1,6 @@
 import noop from 'lodash-es/noop';
 import React from 'react';
 import {useAsyncEffect} from 'use-async-effect';
-import {useImmerReducer} from 'use-immer';
 
 import {init as initGoogle} from '../../clients/google';
 import {
@@ -9,7 +8,7 @@ import {
   StateContext,
   useReducer,
 } from '../../store';
-import Main from '../Main';
+import {Main} from '..';
 
 export default function App() {
   const [state, dispatch] = useReducer();
