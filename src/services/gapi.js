@@ -1,9 +1,9 @@
 import loadjs from 'loadjs';
 import once from 'lodash-es/once';
 
+import {API_KEY, CLIENT_ID} from './firebase';
+
 const GAPI_SCRIPT_URL = 'https://apis.google.com/js/api.js';
-const API_KEY = process.env.REACT_APP_FIREBASE_API_KEY;
-const CLIENT_ID = process.env.REACT_APP_FIREBASE_CLIENT_ID;
 const SCOPES = [
   'https://www.googleapis.com/auth/classroom.courses.readonly',
   'https://www.googleapis.com/auth/classroom.coursework.students',
