@@ -34,7 +34,11 @@ export default function UnitPicker() {
           <Col md="auto">
             <h2>Select a unit:</h2>
             <ListGroup>
-              {map(units.items, ({name}) => <ListGroupItem>{name}</ListGroupItem>)}
+              {map(
+                units.items,
+                ({id, name}) =>
+                  <ListGroupItem action key={id}>{name}</ListGroupItem>
+              )}
             </ListGroup>
           </Col>
         </Row>

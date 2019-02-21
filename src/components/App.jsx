@@ -1,5 +1,5 @@
 import isNull from 'lodash-es/isNull';
-import React, {useCallback, useState} from 'react';
+import React, {useState} from 'react';
 
 import LoginForm from './LoginForm';
 import LessonPlanner from './LessonPlanner';
