@@ -2,10 +2,10 @@ import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import React from 'react';
 
-import {signInWithGoogle} from '../../clients/firebase';
+import {signInWithGoogle} from '../clients/firebase';
 
-import styles from './Main.module.css';
-import {useStoreContexts} from '../../store';
+import styles from './LoginForm.module.css';
+import {useStoreContexts} from '../store';
 
 export default function Main() {
   const {dispatch, state} = useStoreContexts();

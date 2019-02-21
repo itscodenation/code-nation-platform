@@ -8,7 +8,7 @@ import React from 'react'
 import Row from 'react-bootstrap/Row';
 import {useAsyncEffect} from 'use-async-effect';
 
-import {loadAndConfigureGapi} from '../../services/gapi';
+import {loadAndConfigureGapi} from '../services/gapi';
 import {useImmer} from 'use-immer';
 
 export default function UnitPicker() {

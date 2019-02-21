@@ -2,13 +2,13 @@ import noop from 'lodash-es/noop';
 import React from 'react';
 import {useAsyncEffect} from 'use-async-effect';
 
-import {init as initGoogle} from '../../clients/google';
+import {init as initGoogle} from '../clients/google';
 import {
   DispatchContext,
   StateContext,
   useReducer,
-} from '../../store';
-import Main from '../Main';
+} from '../store';
+import Main from './Main';
 
 export default function App() {
   const [state, dispatch] = useReducer();
