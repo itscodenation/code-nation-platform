@@ -1,15 +1,15 @@
 import Col from 'react-bootstrap/Col';
 import Container from 'react-bootstrap/Container';
-import ListGroup from 'react-bootstrap/ListGroup'
-import ListGroupItem from 'react-bootstrap/ListGroupItem'
+import ListGroup from 'react-bootstrap/ListGroup';
+import ListGroupItem from 'react-bootstrap/ListGroupItem';
 import map from 'lodash-es/map';
 import noop from 'lodash-es/noop';
-import React from 'react'
+import React from 'react';
 import Row from 'react-bootstrap/Row';
 import {useAsyncEffect} from 'use-async-effect';
 
-import {loadAndConfigureGapi} from '../services/gapi';
 import {useImmer} from 'use-immer';
+import {loadUnits} from '../clients/google';
 
 export default function UnitPicker() {
   const [{units}, updateState] = useImmer({
@@ -20,10 +20,7 @@ export default function UnitPicker() {
   });
 
   useAsyncEffect(async() => {
-    const gapi = await loadAndConfigureGapi();
-    const {result: {files}} = await gapi.client.drive.files.list({
-      q: "'1wEfbo0L404VKNFpiOtOyQvllfiTs7CnO' in parents"
-    });
+    const files = await loadUnits();
     updateState(draft => {
       draft.units.items = files;
       draft.units.fullyLoaded = true;

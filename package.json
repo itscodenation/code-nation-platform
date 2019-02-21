@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "@firebase/app-types": "^0.3.4",
+    "escape-quotes": "^1.0.2",
     "firebase": "^5.8.3",
     "loadjs": "^3.5.5",
     "lodash-es": "^4.17.11",
