@@ -8,7 +8,7 @@ import {
   StateContext,
   useReducer,
 } from '../../store';
-import {Main} from '..';
+import Main from '../Main';
 
 export default function App() {
   const [state, dispatch] = useReducer();
