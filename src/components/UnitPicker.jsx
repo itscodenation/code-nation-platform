@@ -12,18 +12,16 @@ import {useImmer} from 'use-immer';
 import {loadUnits} from '../clients/google';
 
 export default function UnitPicker() {
-  const [{units}, updateState] = useImmer({
-    units: {
-      items: [],
-      fullyLoaded: false,
-    }
+  const [units, updateUnits] = useImmer({
+    items: [],
+    fullyLoaded: false,
   });
 
   useAsyncEffect(async() => {
     const files = await loadUnits();
-    updateState(draft => {
-      draft.units.items = files;
-      draft.units.fullyLoaded = true;
+    updateUnits(draft => {
+      draft.items = files;
+      draft.fullyLoaded = true;
     });
   }, noop, []);
 

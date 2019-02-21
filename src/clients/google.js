@@ -39,6 +39,7 @@ export async function loadUnits() {
   const {result: {files}} = await drive.files.list({
     q: `'${escapeQuotes(MASTER_CURRICULUM_FOLDER_ID)}' in parents`
   });
+
   return map(
     sortBy(
       filter(
@@ -52,4 +53,10 @@ export async function loadUnits() {
     ),
     'file'
   );
+}
+
+export async function loadCourses() {
+  const {client: {classroom}} = await loadAndConfigureGapi();
+  const {result: {courses}} = await classroom.courses.list({teacherId: 'me'});
+  return courses;
 }

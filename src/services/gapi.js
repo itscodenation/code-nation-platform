@@ -27,7 +27,7 @@ const loadGapi = once(async() => new Promise((resolve, reject) => {
   });
 }));
 
-export async function loadAndConfigureGapi() {
+export const loadAndConfigureGapi = once(async () => {
   const gapi = await loadGapi();
   await new Promise((resolve, reject) => {
     gapi.load('client:auth2', {
@@ -59,7 +59,7 @@ export async function loadAndConfigureGapi() {
   await gapi.auth2.getAuthInstance().signOut();
 
   return gapi;
-}
+});
 
 export function getGapiSync() {
   if (!isGapiLoadedAndConfigured) {
