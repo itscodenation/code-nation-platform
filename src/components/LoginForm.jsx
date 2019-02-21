@@ -1,19 +1,26 @@
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
-import React from 'react';
+import {init as initGoogle} from '../clients/google';
+import noop from 'lodash-es/noop';
+import React, {useState} from 'react';
+import {useAsyncEffect} from 'use-async-effect';
 
 import {signInWithGoogle} from '../clients/firebase';
 
 import styles from './LoginForm.module.css';
-import {useStoreContexts} from '../store';
 
-export default function Main() {
-  const {dispatch, state} = useStoreContexts();
+export default function Main({onSignedIn}) {
+  const [isGoogleReady, updateisGoogleReady] = useState(false);
+
+  useAsyncEffect(async () => {
+    await initGoogle();
+    updateisGoogleReady(true);
+  }, noop, []);
 
   return (
     <div className={styles.container}>
       {
-        state.clients.google.ready ?
+        isGoogleReady ?
           (
             <Form>
               <p>Sign in with your Google account to get started:</p>
@@ -21,7 +28,7 @@ export default function Main() {
                 <Button
                   onClick={async() => {
                     const {user} = await signInWithGoogle();
-                    dispatch({type: 'user-signed-in', payload: {user}});
+                    onSignedIn(user);
                   }}
                 >Log in</Button>
               </Form.Group>

@@ -1,28 +1,15 @@
-import noop from 'lodash-es/noop';
-import React from 'react';
-import {useAsyncEffect} from 'use-async-effect';
+import isNull from 'lodash-es/isNull';
+import React, {useCallback, useState} from 'react';
 
-import {init as initGoogle} from '../clients/google';
-import {
-  DispatchContext,
-  StateContext,
-  useReducer,
-} from '../store';
-import Main from './Main';
+import LoginForm from './LoginForm';
+import LessonPlanner from './LessonPlanner';
 
 export default function App() {
-  const [state, dispatch] = useReducer();
+  const [currentUser, setCurrentUser] = useState(null);
 
-  useAsyncEffect(async () => {
-    await initGoogle();
-    dispatch({type: 'google-ready'});
-  }, noop, []);
-
-  return (
-    <DispatchContext.Provider value={dispatch}>
-      <StateContext.Provider value={state}>
-        <Main />
-      </StateContext.Provider>
-    </DispatchContext.Provider>
-  );
+  if (isNull(currentUser)) {
+    return <LoginForm onSignedIn={setCurrentUser} />;
+  } else {
+    return <LessonPlanner />;
+  }
 }
