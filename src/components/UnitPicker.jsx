@@ -8,41 +8,25 @@ import React from 'react';
 import Row from 'react-bootstrap/Row';
 import {useAsyncEffect} from 'use-async-effect';
 
-import {useImmer} from 'use-immer';
 import {loadUnits} from '../clients/google';
+import useCollection from './hooks/useCollection';
+import Picker from './Picker';
 
-export default function UnitPicker() {
-  const [units, updateUnits] = useImmer({
-    items: [],
-    fullyLoaded: false,
-  });
+export default function UnitPicker({onPick}) {
+  const [{items: units, isComplete}, addItems] = useCollection();
 
   useAsyncEffect(async() => {
     const files = await loadUnits();
-    updateUnits(draft => {
-      draft.items = files;
-      draft.fullyLoaded = true;
-    });
+    addItems(files, true);
   }, noop, []);
 
   return (
-    units.fullyLoaded ? (
-      <Container>
-        <Row className="justify-content-md-center">
-          <Col md="auto">
-            <h2>Select a unit:</h2>
-            <ListGroup>
-              {map(
-                units.items,
-                ({id, name}) =>
-                  <ListGroupItem action key={id}>{name}</ListGroupItem>
-              )}
-            </ListGroup>
-          </Col>
-        </Row>
-      </Container>
-    ) : (
-      <p>Loading…</p>
-    )
+    <Picker
+      itemKey="id"
+      itemLabel="name"
+      items={isComplete ? units : null}
+      header="Select a unit:"
+      onPick={onPick}
+    />
   );
 }
