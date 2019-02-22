@@ -3,9 +3,11 @@ import partial from 'lodash-es/partial';
 import React, {useState} from 'react';
 
 import CoursePicker from './CoursePicker';
+import DatePicker from './DatePicker';
 import LessonPicker from './LessonPicker';
 import UnitPicker from './UnitPicker';
 import {useImmer} from 'use-immer';
+import {format} from 'date-fns';
 
 export default function LessonPlanner() {
   const [{course, date, materials, unit}, updateLesson] = useImmer({
@@ -24,16 +26,21 @@ export default function LessonPlanner() {
   } else if (isNull(unit))  {
     return <UnitPicker onPick={partial(setLessonProp, 'unit')} />;
   } else if (isNull(materials)) {
-    return <LessonPicker
-      unit={unit}
-      onPick={partial(setLessonProp, 'materials')}
-    />;
+    return (
+      <LessonPicker
+        unit={unit}
+        onPick={partial(setLessonProp, 'materials')}
+      />
+    );
+  } else if (isNull(date)) {
+    return <DatePicker onPick={partial(setLessonProp, 'date')} />;
   } else {
     return (
       <div>
         <p>Program: {course.name}</p>
         <p>Unit: {unit.name}</p>
         <p>Lesson: {materials.slides.name}</p>
+        <p>Date: {format(date, 'MMMM D')}</p>
       </div>
     );
   }

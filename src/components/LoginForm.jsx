@@ -7,7 +7,7 @@ import {useAsyncEffect} from 'use-async-effect';
 
 import {signInWithGoogle} from '../clients/firebase';
 
-import styles from './LoginForm.module.css';
+import CenterAll from './layout/CenterAll';
 
 export default function Main({onSignedIn}) {
   const [isGoogleReady, updateisGoogleReady] = useState(false);
@@ -18,7 +18,7 @@ export default function Main({onSignedIn}) {
   }, noop, []);
 
   return (
-    <div className={styles.container}>
+    <CenterAll>
       {
         isGoogleReady ?
           (
@@ -37,6 +37,6 @@ export default function Main({onSignedIn}) {
             <div>Loading…</div>
           )
       }
-    </div>
+    </CenterAll>
   );
 }
