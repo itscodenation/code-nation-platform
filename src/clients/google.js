@@ -2,6 +2,7 @@ import escapeQuotes from 'escape-quotes';
 import filter from 'lodash-es/filter';
 import {getGapiSync, loadAndConfigureGapi} from '../services/gapi';
 import map from 'lodash-es/map';
+import property from 'lodash-es/property';
 import sortBy from 'lodash-es/sortBy';
 
 const MASTER_CURRICULUM_FOLDER_ID =
@@ -42,9 +43,14 @@ function getUnitSequence(name) {
 
 export async function loadUnits() {
   const {client: {drive}} = await loadAndConfigureGapi();
-  const {result: {files}} = await drive.files.list({
-    q: `'${escapeQuotes(MASTER_CURRICULUM_FOLDER_ID)}' in parents`
-  });
+
+  const files = await loadAllPages(
+    pageToken => drive.files.list({
+      pageToken,
+      q: `'${escapeQuotes(MASTER_CURRICULUM_FOLDER_ID)}' in parents`,
+    }),
+    property('files'),
+  );
 
   return map(
     sortBy(
@@ -63,54 +69,66 @@ export async function loadUnits() {
 
 export async function loadLessons({id: unitId}) {
   const {client: {drive}} = await loadAndConfigureGapi();
-  const {result: {files}} = await drive.files.list({
-    q: `'${escapeQuotes(unitId)}' in parents`,
-  });
 
   const lessonMap = new Map();
+  const eachPage = loadEachPage(pageToken => drive.files.list({
+    q: `'${escapeQuotes(unitId)}' in parents`,
+  }));
 
-  for (const file of files) {
-    const parsedFilename =
-      /^(?:\d+)\.(\d+|PR?\d?) (?:([A-Z]{2}) )?(?:.+)$/.exec(file.name);
-    if (parsedFilename) {
-      const [, fullLessonIndex, typeAbbreviation] = parsedFilename;
-      let lessonIndex = fullLessonIndex;
-      let type;
-      if (typeAbbreviation in LESSON_MATERIAL_ABBREVIATIONS) {
-        type = LESSON_MATERIAL_ABBREVIATIONS[typeAbbreviation];
-      } else if (!typeAbbreviation) {
-        if (fullLessonIndex.startsWith('PR')) {
-          type = 'rubric';
-          lessonIndex = fullLessonIndex.replace(/^PR/, 'P');
-        } else if (
-          file.mimeType === 'application/vnd.google-apps.presentation'
-        ) {
-          type = 'slides';
-        }
-      }
+  for await (const {files} of eachPage) {
+    for (const file of files) {
+      const {type, index} = identifyLessonFile(file) || {};
 
       if (type) {
-        if (!lessonMap.has(lessonIndex)) {
-          lessonMap.set(lessonIndex, {lessonIndex});
+        if (!lessonMap.has(index)) {
+          lessonMap.set(index, {index});
         }
-        const lesson = lessonMap.get(lessonIndex);
+        const lesson = lessonMap.get(index);
         lesson[type] = file;
       }
     }
   }
 
-  return Array.from(lessonMap.values()).sort(
-    ({lessonIndex: lessonIndex1}, {lessonIndex: lessonIndex2}) => {
-      const lesson1IsProject = lessonIndex1.startsWith('P');
-      const lesson2IsProject = lessonIndex2.startsWith('P');
+  return sortLessons(Array.from(lessonMap.values()));
+}
+
+function identifyLessonFile(file) {
+  const parsedFilename =
+    /^(?:\d+)\.(\d+|PR?\d?) (?:([A-Z]{2}) )?(?:.+)$/.exec(file.name);
+  if (parsedFilename) {
+    const [, index, typeAbbreviation] = parsedFilename;
+    if (typeAbbreviation in LESSON_MATERIAL_ABBREVIATIONS) {
+      return {
+        index,
+        type: LESSON_MATERIAL_ABBREVIATIONS[typeAbbreviation],
+      };
+    } else if (!typeAbbreviation) {
+      if (index.startsWith('PR')) {
+        return {
+          index: index.replace(/^PR/, 'P'),
+          type: 'rubric',
+        };
+      } else if (file.mimeType === 'application/vnd.google-apps.presentation') {
+        return {
+          index,
+          type: 'slides',
+        };
+      }
+    }
+  }
+}
+
+function sortLessons(lessons) {
+  return lessons.sort(
+    ({index: index1}, {index: index2}) => {
+      const lesson1IsProject = index1.startsWith('P');
+      const lesson2IsProject = index2.startsWith('P');
 
       if (lesson1IsProject && !lesson2IsProject) return 1;
       if (lesson2IsProject && !lesson1IsProject) return -1;
 
-      const numericIndex1 = Number(/\d+$/.exec(lessonIndex1)[0]);
-      const numericIndex2 = Number(/\d+$/.exec(lessonIndex2)[0]);
-
-      console.log({lessonIndex1, lessonIndex2, numericIndex1, numericIndex2});
+      const numericIndex1 = Number(/\d+$/.exec(index1)[0]);
+      const numericIndex2 = Number(/\d+$/.exec(index2)[0]);
 
       return numericIndex1 - numericIndex2;
     }
@@ -119,6 +137,26 @@ export async function loadLessons({id: unitId}) {
 
 export async function loadCourses() {
   const {client: {classroom}} = await loadAndConfigureGapi();
-  const {result: {courses}} = await classroom.courses.list({teacherId: 'me'});
-  return courses;
+  return loadAllPages(
+    pageToken => classroom.courses.list({teacherId: 'me'}),
+    property('courses'),
+  );
+}
+
+async function loadAllPages(getPage, getItems) {
+  const items = [];
+  for await (const result of loadEachPage(getPage)) {
+    items.push(...getItems(result));
+  }
+
+  return items;
+}
+
+async function* loadEachPage(getPage) {
+  let pageToken;
+  do {
+    const {result} = await getPage(pageToken);
+    yield result;
+    pageToken = result.nextPageToken;
+  } while (pageToken);
 }

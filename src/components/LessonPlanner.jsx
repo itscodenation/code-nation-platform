@@ -21,6 +21,7 @@ export default function LessonPlanner() {
       <div>
         <p>Program: {course.name}</p>
         <p>Unit: {unit.name}</p>
+        <p>Lesson: {lesson.slides.name}</p>
       </div>
     );
   }

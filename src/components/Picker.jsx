@@ -7,7 +7,6 @@ import map from 'lodash-es/map';
 import React from 'react';
 import Row from 'react-bootstrap/Row';
 import property from 'lodash-es/property';
-import {partials} from 'handlebars';
 
 export default function Picker({
   itemKey,
