@@ -13,6 +13,12 @@ const IRREGULAR_UNIT_NAMES = {
   'Midyear Challenge and Review Unit 18-19': 5.5,
 };
 
+const LESSON_MATERIAL_ABBREVIATIONS = {
+  'GN': 'guidedNotes',
+  'HW': 'homework',
+  'LP': 'slides',
+};
+
 export async function init() {
   return loadAndConfigureGapi();
 }
@@ -52,6 +58,62 @@ export async function loadUnits() {
       'sequence',
     ),
     'file'
+  );
+}
+
+export async function loadLessons({id: unitId}) {
+  const {client: {drive}} = await loadAndConfigureGapi();
+  const {result: {files}} = await drive.files.list({
+    q: `'${escapeQuotes(unitId)}' in parents`,
+  });
+
+  const lessonMap = new Map();
+
+  for (const file of files) {
+    const parsedFilename =
+      /^(?:\d+)\.(\d+|PR?\d?) (?:([A-Z]{2}) )?(?:.+)$/.exec(file.name);
+    if (parsedFilename) {
+      const [, fullLessonIndex, typeAbbreviation] = parsedFilename;
+      let lessonIndex = fullLessonIndex;
+      let type;
+      if (typeAbbreviation in LESSON_MATERIAL_ABBREVIATIONS) {
+        type = LESSON_MATERIAL_ABBREVIATIONS[typeAbbreviation];
+      } else if (!typeAbbreviation) {
+        if (fullLessonIndex.startsWith('PR')) {
+          type = 'rubric';
+          lessonIndex = fullLessonIndex.replace(/^PR/, 'P');
+        } else if (
+          file.mimeType === 'application/vnd.google-apps.presentation'
+        ) {
+          type = 'slides';
+        }
+      }
+
+      if (type) {
+        if (!lessonMap.has(lessonIndex)) {
+          lessonMap.set(lessonIndex, {lessonIndex});
+        }
+        const lesson = lessonMap.get(lessonIndex);
+        lesson[type] = file;
+      }
+    }
+  }
+
+  return Array.from(lessonMap.values()).sort(
+    ({lessonIndex: lessonIndex1}, {lessonIndex: lessonIndex2}) => {
+      const lesson1IsProject = lessonIndex1.startsWith('P');
+      const lesson2IsProject = lessonIndex2.startsWith('P');
+
+      if (lesson1IsProject && !lesson2IsProject) return 1;
+      if (lesson2IsProject && !lesson1IsProject) return -1;
+
+      const numericIndex1 = Number(/\d+$/.exec(lessonIndex1)[0]);
+      const numericIndex2 = Number(/\d+$/.exec(lessonIndex2)[0]);
+
+      console.log({lessonIndex1, lessonIndex2, numericIndex1, numericIndex2});
+
+      return numericIndex1 - numericIndex2;
+    }
   );
 }
 
