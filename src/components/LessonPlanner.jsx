@@ -1,24 +1,28 @@
 import isNull from 'lodash-es/isNull';
 import partial from 'lodash-es/partial';
-import React, {useState} from 'react';
+import React from 'react';
 
 import CoursePicker from './CoursePicker';
 import DatePicker from './DatePicker';
+import LessonForm from './LessonForm';
 import LessonPicker from './LessonPicker';
 import UnitPicker from './UnitPicker';
 import {useImmer} from 'use-immer';
 import {format} from 'date-fns';
 
 export default function LessonPlanner() {
-  const [{course, date, materials, unit}, updateLesson] = useImmer({
+  const [{course, date, materials, responses, unit}, updateLesson] = useImmer({
     course: null,
     date: null,
     materials: null,
+    responses: null,
     unit: null,
   });
 
   function setLessonProp(prop, value) {
-    return updateLesson(draft => { draft[prop] = value; });
+    return updateLesson((draft) => {
+      draft[prop] = value;
+    });
   }
 
   if (isNull(course)) {
@@ -34,6 +38,8 @@ export default function LessonPlanner() {
     );
   } else if (isNull(date)) {
     return <DatePicker onPick={partial(setLessonProp, 'date')} />;
+  } else if (isNull(responses)) {
+    return <LessonForm onSubmit={partial(setLessonProp, 'responses')} />;
   } else {
     return (
       <div>

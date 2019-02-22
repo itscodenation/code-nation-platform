@@ -8,6 +8,7 @@
     "date-fns": "^2.0.0-alpha.27",
     "escape-quotes": "^1.0.2",
     "firebase": "^5.8.3",
+    "formik": "^1.5.1",
     "loadjs": "^3.5.5",
     "lodash-es": "^4.17.11",
     "react": "^16.8.2",
@@ -16,7 +17,8 @@
     "react-dom": "^16.8.2",
     "react-scripts": "2.1.5",
     "use-async-effect": "^2.0.0",
-    "use-immer": "^0.1.0"
+    "use-immer": "^0.1.0",
+    "yup": "^0.26.10"
   },
   "scripts": {
     "start": "react-scripts start",
