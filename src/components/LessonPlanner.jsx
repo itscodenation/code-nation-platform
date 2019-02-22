@@ -1,27 +1,39 @@
 import isNull from 'lodash-es/isNull';
+import partial from 'lodash-es/partial';
 import React, {useState} from 'react';
 
 import CoursePicker from './CoursePicker';
 import LessonPicker from './LessonPicker';
 import UnitPicker from './UnitPicker';
+import {useImmer} from 'use-immer';
 
 export default function LessonPlanner() {
-  const [course, setCourse] = useState(null);
-  const [unit, setUnit] = useState(null);
-  const [lesson, setLesson] = useState(null);
+  const [{course, date, materials, unit}, updateLesson] = useImmer({
+    course: null,
+    date: null,
+    materials: null,
+    unit: null,
+  });
+
+  function setLessonProp(prop, value) {
+    return updateLesson(draft => { draft[prop] = value; });
+  }
 
   if (isNull(course)) {
-    return <CoursePicker onPick={setCourse} />;
+    return <CoursePicker onPick={partial(setLessonProp, 'course')} />;
   } else if (isNull(unit))  {
-    return <UnitPicker onPick={setUnit} />;
-  } else if (isNull(lesson)) {
-    return <LessonPicker unit={unit} onPick={setLesson} />;
+    return <UnitPicker onPick={partial(setLessonProp, 'unit')} />;
+  } else if (isNull(materials)) {
+    return <LessonPicker
+      unit={unit}
+      onPick={partial(setLessonProp, 'materials')}
+    />;
   } else {
     return (
       <div>
         <p>Program: {course.name}</p>
         <p>Unit: {unit.name}</p>
-        <p>Lesson: {lesson.slides.name}</p>
+        <p>Lesson: {materials.slides.name}</p>
       </div>
     );
   }
