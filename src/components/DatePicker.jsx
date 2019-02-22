@@ -5,10 +5,10 @@ import 'react-datepicker/dist/react-datepicker.css';
 
 import CenterAll from './layout/CenterAll';
 import Button from 'react-bootstrap/Button';
-import {format, startOfTomorrow} from 'date-fns';
+import {format, addDays} from 'date-fns';
 
 export default function DatePicker({onPick}) {
-  const [selected, updateSelected] = useState(startOfTomorrow());
+  const [selected, updateSelected] = useState(addDays(new Date(), 1));
 
   return (
     <CenterAll>
@@ -22,7 +22,7 @@ export default function DatePicker({onPick}) {
         />
       </div>
       <Button size="lg" variant="primary" onClick={() => onPick(selected)}>
-        {format(selected, 'MMMM D')}
+        {format(selected, 'MMMM d')}
       </Button>
     </CenterAll>
   );
