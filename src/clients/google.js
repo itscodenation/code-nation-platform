@@ -73,7 +73,7 @@ export async function loadLessons({id: unitId}) {
   const lessonMap = new Map();
   const eachPage = loadEachPage(pageToken => drive.files.list({
     q: `'${escapeQuotes(unitId)}' in parents`,
-    fields: ['files(exportLinks,id,mimeType,name)']
+    fields: ['files(exportLinks,id,mimeType,name,webViewLink)']
   }));
 
   for await (const {files} of eachPage) {

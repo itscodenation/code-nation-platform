@@ -52,9 +52,19 @@ function LessonFormField({
   );
 }
 
-export default function LessonForm({onSubmit}) {
+export default function LessonForm({lessonMaterials, onSubmit}) {
   return (
     <CenterAll centerText={false} lg={8}>
+      <p>
+        Refer to the{' '}
+        <a
+          href={lessonMaterials.slides.webViewLink}
+          rel="noopener noreferrer"
+          target="_blank"
+        >lesson slides</a>
+        {' '}for the below information.
+      </p>
+
       <Formik
         initialValues={schema.default()}
         validationSchema={schema}

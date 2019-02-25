@@ -39,7 +39,12 @@ export default function LessonPlanner() {
   } else if (isNull(date)) {
     return <DatePicker onPick={partial(setLessonProp, 'date')} />;
   } else if (isNull(responses)) {
-    return <LessonForm onSubmit={partial(setLessonProp, 'responses')} />;
+    return (
+      <LessonForm
+        lessonMaterials={materials}
+        onSubmit={partial(setLessonProp, 'responses')}
+      />
+    );
   } else {
     return (
       <div>
