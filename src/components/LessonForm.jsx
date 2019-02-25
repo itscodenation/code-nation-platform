@@ -1,4 +1,5 @@
 import Form from 'react-bootstrap/Form';
+import Button from 'react-bootstrap/Button';
 import {Formik, Field} from 'formik';
 import React from 'react';
 import * as yup from 'yup';
@@ -102,6 +103,10 @@ export default function LessonForm({onSubmit}) {
                 label="Exit ticket prompt"
                 name="exitTicketPrompt"
               />
+
+              <Form.Group>
+                <Button variant="primary" type="submit">Continue</Button>
+              </Form.Group>
             </Form>
           )}
       </Formik>

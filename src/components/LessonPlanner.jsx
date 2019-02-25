@@ -46,7 +46,8 @@ export default function LessonPlanner() {
         <p>Program: {course.name}</p>
         <p>Unit: {unit.name}</p>
         <p>Lesson: {materials.slides.name}</p>
-        <p>Date: {format(date, 'MMMM D')}</p>
+        <p>Date: {format(date, 'MMMM d')}</p>
+        <p>Responses: <pre>{JSON.stringify(responses)}</pre></p>
       </div>
     );
   }
