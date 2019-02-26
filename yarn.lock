@@ -4846,11 +4846,6 @@ immer@1.10.0:
   resolved "https://registry.yarnpkg.com/immer/-/immer-1.10.0.tgz#bad67605ba9c810275d91e1c2a47d4582e98286d"
   integrity sha512-O3sR1/opvCDGLEVcvrGTMtLac8GJ5IwZC4puPrLuRj3l7ICKvkmA0vGuU9OW8mV9WIBRnaxp5GJh9IEAaNOoYg==
 
-immer@^1.7.3:
-  version "1.12.1"
-  resolved "https://registry.yarnpkg.com/immer/-/immer-1.12.1.tgz#40c6e5b292c00560836c2993bda3a24379d466f5"
-  integrity sha512-3fmKM6ovaqDt0CdC9daXpNi5x/YCYS3i4cwLdTVkhJdk5jrDXoPs7lCm3IqM3yhfSnz4tjjxbRG2CziQ7m8ztg==
-
 import-cwd@^2.0.0:
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/import-cwd/-/import-cwd-2.1.0.tgz#aa6cf36e722761285cb371ec6519f53e2435b0a9"
@@ -10024,13 +10019,6 @@ use-async-effect@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/use-async-effect/-/use-async-effect-2.0.0.tgz#fbb1504b467cd35d89496f49ae57b0d2a0367c8b"
   integrity sha512-H9sGnYq+GOHXzY47coTPnDwne3wxIuc2ZjiORp4A3ZUM8byNrVV3nRnWsluaKIelLJuqWc43DcwwoESp4zM3sw==
-
-use-immer@^0.1.0:
-  version "0.1.0"
-  resolved "https://registry.yarnpkg.com/use-immer/-/use-immer-0.1.0.tgz#58b2f861f539faa9fdc8e695cda9202e0c8f1997"
-  integrity sha512-zn/C8S4qB62dKILDq7+BLPYX9I3iAbkqJjTXOi1V1AmM7Elr/0BlOycNKkcKlC/bv6KqPsxE8cN3YM8cQ9/rIg==
-  dependencies:
-    immer "^1.7.3"
 
 use@^3.1.0:
   version "3.1.1"

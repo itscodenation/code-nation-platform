@@ -1,74 +1,58 @@
-import isNull from 'lodash-es/isNull';
-import partial from 'lodash-es/partial';
-import React from 'react';
+import format from 'date-fns/format';
+import isUndefined from 'lodash-es/isUndefined';
+import React, {useState} from 'react';
 
 import CoursePicker from './CoursePicker';
 import DatePicker from './DatePicker';
 import LessonForm from './LessonForm';
 import LessonPicker from './LessonPicker';
 import UnitPicker from './UnitPicker';
-import {useImmer} from 'use-immer';
-import {format} from 'date-fns';
 import ProgramForm from './ProgramForm';
 
 export default function LessonPlanner() {
-  const [{
-    course,
-    date,
-    materials,
-    program,
-    responses,
-    unit
-  }, updateLesson] = useImmer({
-    course: null,
-    date: null,
-    materials: null,
-    program: null,
-    responses: null,
-    unit: null,
-  });
+  const [course, setCourse] = useState();
+  const [date, setDate] = useState();
+  const [lessonPlan, setLessonPlan] = useState();
+  const [masterMaterials, setMasterMaterials] = useState();
+  const [programDetails, setProgramDetails] = useState();
+  const [unit, setUnit] = useState();
 
-  function setLessonProp(prop, value) {
-    return updateLesson((draft) => {
-      draft[prop] = value;
-    });
-  }
-
-  if (isNull(course)) {
-    return <CoursePicker onPick={partial(setLessonProp, 'course')} />;
-  } else if (isNull(program)) {
+  if (isUndefined(course)) {
+    return <CoursePicker onPick={setCourse} />;
+  } else if (isUndefined(programDetails)) {
     return (
       <ProgramForm
         course={course}
-        onSubmit={partial(setLessonProp, 'program')}
+        onSubmit={setProgramDetails}
       />
     );
-  } else if (isNull(unit))  {
-    return <UnitPicker onPick={partial(setLessonProp, 'unit')} />;
-  } else if (isNull(materials)) {
+  } else if (isUndefined(unit))  {
+    return <UnitPicker onPick={setUnit} />;
+  } else if (isUndefined(masterMaterials)) {
     return (
       <LessonPicker
         unit={unit}
-        onPick={partial(setLessonProp, 'materials')}
+        onPick={setMasterMaterials}
       />
     );
-  } else if (isNull(date)) {
-    return <DatePicker onPick={partial(setLessonProp, 'date')} />;
-  } else if (isNull(responses)) {
+  } else if (isUndefined(date)) {
+    return <DatePicker onPick={setDate} />;
+  } else if (isUndefined(lessonPlan)) {
     return (
       <LessonForm
-        lessonMaterials={materials}
-        onSubmit={partial(setLessonProp, 'responses')}
+        lessonMaterials={masterMaterials}
+        onSubmit={setLessonPlan}
       />
     );
   } else {
     return (
       <div>
         <p>Program: {course.name}</p>
+        <p>Program details: <code>{JSON.stringify(programDetails)}</code></p>
         <p>Unit: {unit.name}</p>
-        <p>Lesson: {materials.slides.name}</p>
+        <p>Lesson: {masterMaterials.slides.name}</p>
         <p>Date: {format(date, 'MMMM d')}</p>
-        <p>Responses: <pre>{JSON.stringify(responses)}</pre></p>
+        <p>Lesson Plan: <code>{JSON.stringify(lessonPlan)}</code></p>
       </div>
     );
   }
