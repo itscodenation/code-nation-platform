@@ -9,12 +9,21 @@ import LessonPicker from './LessonPicker';
 import UnitPicker from './UnitPicker';
 import {useImmer} from 'use-immer';
 import {format} from 'date-fns';
+import ProgramForm from './ProgramForm';
 
 export default function LessonPlanner() {
-  const [{course, date, materials, responses, unit}, updateLesson] = useImmer({
+  const [{
+    course,
+    date,
+    materials,
+    program,
+    responses,
+    unit
+  }, updateLesson] = useImmer({
     course: null,
     date: null,
     materials: null,
+    program: null,
     responses: null,
     unit: null,
   });
@@ -27,6 +36,10 @@ export default function LessonPlanner() {
 
   if (isNull(course)) {
     return <CoursePicker onPick={partial(setLessonProp, 'course')} />;
+  } else if (isNull(program)) {
+    return (
+      <ProgramForm onSubmit={partial(setLessonProp, 'program')} />
+    );
   } else if (isNull(unit))  {
     return <UnitPicker onPick={partial(setLessonProp, 'unit')} />;
   } else if (isNull(materials)) {

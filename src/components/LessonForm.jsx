@@ -70,14 +70,7 @@ export default function LessonForm({lessonMaterials, onSubmit}) {
         validationSchema={schema}
         onSubmit={values => onSubmit(values)}
       >
-        {({
-          values,
-          errors,
-          touched,
-          handleBlur,
-          handleChange,
-          handleSubmit
-        }) => (
+        {({handleSubmit}) => (
             <Form noValidate onSubmit={handleSubmit}>
               <Field
                 as="textarea"
