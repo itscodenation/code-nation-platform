@@ -1,12 +1,20 @@
+import addMilliseconds from 'date-fns/addMilliseconds';
 import Button from 'react-bootstrap/Button';
 import Col from 'react-bootstrap/Col';
+import defaults from 'lodash-es/defaults';
 import Form from 'react-bootstrap/Form';
+import format from 'date-fns/format';
 import {Formik} from 'formik';
+import isNull from 'lodash-es/isNull';
 import isUndefined from 'lodash-es/isUndefined';
-import React from 'react'
+import noop from 'lodash-es/noop';
+import React, {useState} from 'react'
+import startOfDay from 'date-fns/startOfDay';
 import * as yup from 'yup';
 
 import CenterAll from './layout/CenterAll';
+import {saveProgramDetails, loadProgramDetails} from '../clients/firebase';
+import {useAsyncEffect} from 'use-async-effect';
 
 const yupTime = yup.number()
   .default('')
@@ -59,19 +67,54 @@ const schema = yup.object().shape({
   },
 );
 
-export default function ProgramForm({onSubmit}) {
+function formatTimestamp(timestamp) {
+  const date = addMilliseconds(
+    startOfDay(new Date()),
+    timestamp,
+  );
+  return format(date, 'h:mma');
+}
+
+export default function ProgramForm({course, onSubmit}) {
+  const [initialValues, setInitialValues] = useState(null);
+
+  useAsyncEffect(async () => {
+    const savedProgramDetails = await loadProgramDetails(course.id);
+    if (savedProgramDetails) {
+      setInitialValues(defaults(
+        {
+          endTime: formatTimestamp(savedProgramDetails.endTime),
+          startTime: formatTimestamp(savedProgramDetails.startTime),
+        },
+        savedProgramDetails,
+        schema.default(),
+      ));
+    } else {
+      setInitialValues(schema.default());
+    }
+  }, noop, [course]);
+
+  if (isNull(initialValues)) {
+    return null;
+  }
+
   return (
     <CenterAll lg={8} centerText={false}>
       <Formik
-        initialValues={schema.default()}
+        initialValues={initialValues}
         validationSchema={schema}
-        onSubmit={values => onSubmit(schema.cast(values))}
+        onSubmit={async (values) => {
+          const programDetails = schema.cast(values);
+          await saveProgramDetails(course.id, programDetails);
+          onSubmit(programDetails);
+        }}
       >
         {({
           errors,
           handleBlur,
           handleChange,
           handleSubmit,
+          isSubmitting,
           isValid,
           touched,
           values: {endTime, lessonMaterialsFolderUrl, programPrefix, startTime}
@@ -148,10 +191,10 @@ export default function ProgramForm({onSubmit}) {
               </Form.Group>
               <Form.Group>
                 <Button
-                  disabled={!isValid}
+                  disabled={!isValid || isSubmitting}
                   type="submit"
                 >
-                  Continue
+                  {isSubmitting ? 'Saving...' : 'Continue'}
                 </Button>
               </Form.Group>
             </Form>

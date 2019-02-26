@@ -38,7 +38,10 @@ export default function LessonPlanner() {
     return <CoursePicker onPick={partial(setLessonProp, 'course')} />;
   } else if (isNull(program)) {
     return (
-      <ProgramForm onSubmit={partial(setLessonProp, 'program')} />
+      <ProgramForm
+        course={course}
+        onSubmit={partial(setLessonProp, 'program')}
+      />
     );
   } else if (isNull(unit))  {
     return <UnitPicker onPick={partial(setLessonProp, 'unit')} />;
