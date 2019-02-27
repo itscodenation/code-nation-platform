@@ -102,6 +102,7 @@ export default function ProgramForm({course, onSubmit}) {
     <CenterAll lg={8} centerText={false}>
       <Formik
         initialValues={initialValues}
+        isInitialValid={schema.isValidSync(initialValues)}
         validationSchema={schema}
         onSubmit={async (values) => {
           const programDetails = schema.cast(values);

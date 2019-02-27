@@ -51,7 +51,7 @@ export default function LessonPlanner() {
   } else if (isUndefined(lessonPlan)) {
     return (
       <LessonForm
-        lessonMaterials={masterMaterials}
+        lessonMaterials={programMaterials}
         onSubmit={setLessonPlan}
       />
     );
