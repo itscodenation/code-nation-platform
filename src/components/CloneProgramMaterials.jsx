@@ -8,7 +8,6 @@ import {useAsyncEffect} from 'use-async-effect';
 import {getFolderDetails, copyLesson} from '../clients/google';
 
 import CenterAll from './layout/CenterAll';
-import {async} from 'q';
 
 export default function CloneProgramMaterials({
   date,

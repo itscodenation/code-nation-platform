@@ -2,6 +2,7 @@ import format from 'date-fns/format';
 import isUndefined from 'lodash-es/isUndefined';
 import React, {useState} from 'react';
 
+import AddToClassroom from './AddToClassroom';
 import CloneProgramMaterials from './CloneProgramMaterials';
 import CoursePicker from './CoursePicker';
 import DatePicker from './DatePicker';
@@ -11,6 +12,7 @@ import UnitPicker from './UnitPicker';
 import ProgramForm from './ProgramForm';
 
 export default function LessonPlanner() {
+  const [classroomMaterials, setClassroomMaterials] = useState();
   const [course, setCourse] = useState();
   const [date, setDate] = useState();
   const [lessonPlan, setLessonPlan] = useState();
