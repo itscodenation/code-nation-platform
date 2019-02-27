@@ -95,7 +95,7 @@ export default function LessonForm({lessonMaterials, onSubmit}) {
               validationSchema={schema}
               onSubmit={values => onSubmit(values)}
             >
-              {({handleSubmit}) => (
+              {({handleSubmit, isValid, isSubmitting}) => (
                 <Form noValidate onSubmit={handleSubmit}>
                   <Field
                     as="textarea"
@@ -140,7 +140,11 @@ export default function LessonForm({lessonMaterials, onSubmit}) {
                   />
 
                   <Form.Group>
-                    <Button variant="primary" type="submit">Continue</Button>
+                    <Button
+                      disabled={!isValid || isSubmitting}
+                      type="submit"
+                      variant="primary"
+                    >Continue</Button>
                   </Form.Group>
                 </Form>
               )}
