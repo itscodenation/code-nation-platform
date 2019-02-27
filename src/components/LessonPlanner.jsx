@@ -2,6 +2,7 @@ import format from 'date-fns/format';
 import isUndefined from 'lodash-es/isUndefined';
 import React, {useState} from 'react';
 
+import CloneProgramMaterials from './CloneProgramMaterials';
 import CoursePicker from './CoursePicker';
 import DatePicker from './DatePicker';
 import LessonForm from './LessonForm';
@@ -15,6 +16,7 @@ export default function LessonPlanner() {
   const [lessonPlan, setLessonPlan] = useState();
   const [masterMaterials, setMasterMaterials] = useState();
   const [programDetails, setProgramDetails] = useState();
+  const [programMaterials, setProgramMaterials] = useState();
   const [unit, setUnit] = useState();
 
   if (isUndefined(course)) {
@@ -33,6 +35,15 @@ export default function LessonPlanner() {
       <LessonPicker
         unit={unit}
         onPick={setMasterMaterials}
+      />
+    );
+  } else if (isUndefined(programMaterials)) {
+    return (
+      <CloneProgramMaterials
+        date={date}
+        masterMaterials={masterMaterials}
+        programDetails={programDetails}
+        onCloned={setProgramMaterials}
       />
     );
   } else if (isUndefined(date)) {
