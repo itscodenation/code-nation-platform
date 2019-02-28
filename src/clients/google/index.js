@@ -24,6 +24,7 @@ const LESSON_MATERIAL_ABBREVIATIONS = {
 };
 
 export {default as copyLesson} from './copyLesson';
+export {default as addLessonToClassroom} from './addLessonToClassroom';
 
 export async function init() {
   return loadAndConfigureGapi();

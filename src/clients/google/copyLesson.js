@@ -26,7 +26,7 @@ async function makeFilePubliclyReadable(fileId) {
 
   const {result: file} = await drive.files.get({
     fileId,
-    fields: ['webViewLink', 'id', 'mimeType', 'name'],
+    fields: ['webViewLink,id,mimeType,name']
   });
   return file;
 }

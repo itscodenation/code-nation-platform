@@ -57,6 +57,16 @@ export default function LessonPlanner() {
         onSubmit={setLessonPlan}
       />
     );
+  } else if (isUndefined(classroomMaterials)) {
+    return (
+      <AddToClassroom
+        course={course}
+        date={date}
+        lessonPlan={lessonPlan}
+        programDetails={programDetails}
+        programMaterials={programMaterials}
+      />
+    );
   } else {
     return (
       <div>
