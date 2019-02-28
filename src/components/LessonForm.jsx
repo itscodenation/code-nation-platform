@@ -24,10 +24,6 @@ const schema = yup.object().shape({
     .required('Enter the Exit Ticket prompt')
     .default(''),
 
-  independentPracticeSlideUrl: yup.string()
-    .url('Please enter a valid URL')
-    .default(''),
-
   independentPracticeStarterCodeUrl: yup.string()
     .url('Please enter a valid URL')
     .default(''),
@@ -35,6 +31,8 @@ const schema = yup.object().shape({
   objective: yup.string()
     .required('Enter a lesson objective')
     .default(''),
+
+  vocabulary: yup.string().default(''),
 });
 
 function LessonFormField({
@@ -100,13 +98,6 @@ export default function LessonForm({lessonMaterials, onSubmit}) {
                   <Field
                     as="textarea"
                     component={LessonFormField}
-                    label="Learning objective"
-                    name="objective"
-                  />
-
-                  <Field
-                    as="textarea"
-                    component={LessonFormField}
                     label="Do Now prompt"
                     name="doNowPrompt"
                   />
@@ -119,10 +110,17 @@ export default function LessonForm({lessonMaterials, onSubmit}) {
                   />
 
                   <Field
+                    as="textarea"
                     component={LessonFormField}
-                    label="Link to slides for Independent Practice"
-                    name="independentPracticeSlideUrl"
-                    type="text"
+                    label="Learning objective"
+                    name="objective"
+                  />
+
+                  <Field
+                    as="textarea"
+                    component={LessonFormField}
+                    label="Vocabulary"
+                    name="vocabulary"
                   />
 
                   <Field

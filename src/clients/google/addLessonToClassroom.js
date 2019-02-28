@@ -5,53 +5,55 @@ import {
   startOfDay,
 } from 'date-fns/esm';
 import {loadAndConfigureGapi} from '../../services/gapi';
-import {sprintf} from 'sprintf-js';
 
 export default async function addLessonToClassroom({
   course: {id: courseId},
   date,
-  lessonPlan: {doNowPrompt, doNowStarterCodeUrl},
+  lessonPlan: {
+    doNowPrompt,
+    doNowStarterCodeUrl,
+    independentPracticeStarterCodeUrl,
+    objective,
+    vocabulary,
+  },
   programDetails: {startTime, endTime},
-  programMaterials,
+  programMaterials: {guidedNotes, homework, slides},
 }) {
-  const {isProject, lessonNumber, unitNumber} =
-    extractLessonMetadata(programMaterials);
+  const {fullLessonNumber, isProject, title} =
+    extractLessonMetadata(slides);
 
   const startDateTime = dateTime(date, startTime);
   const endDateTime = dateTime(date, endTime);
 
   await addDoNow({
     courseId,
-    lessonNumber,
+    fullLessonNumber,
     prompt: doNowPrompt,
     startDateTime,
     starterCodeUrl: doNowStarterCodeUrl,
-    unitNumber,
   });
-}
 
-function dateTime(date, msOffset) {
-  return addMilliseconds(startOfDay(date), msOffset);
-}
-
-function extractLessonMetadata(materials) {
-  const [unitString, projectString, lessonString] =
-    /\b(\d+)\.(P)?(\d*)\b/.exec(materials.slides.name);
-
-  return {
-    unitNumber: Number(unitString),
-    lessonNumber: Number(lessonString || ''),
-    isProject: Boolean(projectString),
-  };
+  await addSlides({
+    courseId,
+    endDateTime,
+    fullLessonNumber,
+    guidedNotes,
+    homework,
+    independentPracticeStarterCodeUrl,
+    objective,
+    slides,
+    startDateTime,
+    title,
+    vocabulary,
+  });
 }
 
 async function addDoNow({
   courseId,
-  lessonNumber,
+  fullLessonNumber,
   prompt,
   starterCodeUrl,
   startDateTime,
-  unitNumber,
 }) {
   const {client: {classroom}} = await loadAndConfigureGapi();
 
@@ -62,18 +64,81 @@ async function addDoNow({
     dueDate: apiDate(dueDateTime),
     dueTime: apiTime(dueDateTime),
     scheduledTime: apiTimestamp(addMinutes(startDateTime, -5)),
-    title: sprintf('%02d.%d Do Now', unitNumber, lessonNumber),
+    title: `${fullLessonNumber} Do Now`,
     maxPoints: 0,
     workType: 'ASSIGNMENT',
   };
 
   if (starterCodeUrl) {
-    resource.materials = [{
-      link: {title: 'Starter code', url: starterCodeUrl},
-    }];
+    resource.materials = [{link: {url: starterCodeUrl}}];
   }
 
   await classroom.courses.courseWork.create({courseId, resource});
+}
+
+async function addSlides({
+  courseId,
+  endDateTime,
+  fullLessonNumber,
+  guidedNotes,
+  homework,
+  independentPracticeStarterCodeUrl,
+  objective,
+  slides,
+  startDateTime,
+  title,
+  vocabulary,
+}) {
+  const dueDateTime = addMinutes(endDateTime, 10);
+
+  const resource = {
+    description: `${objective}\n\nVocab: ${vocabulary}`,
+    dueDate: apiDate(dueDateTime),
+    dueTime: apiTime(dueDateTime),
+    materials: [{driveFile: {driveFile: {id: slides.id}}}],
+    maxPoints: 0,
+    scheduledTime: apiTimestamp(addMinutes(startDateTime, -5)),
+    title: `${fullLessonNumber} ${title}`,
+    workType: 'ASSIGNMENT',
+  };
+
+  if (independentPracticeStarterCodeUrl) {
+    resource.materials.push({link: {url: independentPracticeStarterCodeUrl}});
+  }
+
+  if (guidedNotes) {
+    resource.materials.push({driveFile: {driveFile: {id: guidedNotes.id}}});
+  }
+
+  if (homework) {
+    resource.materials.push({driveFile: {driveFile: {id: homework.id}}});
+  }
+
+  const {client: {classroom}} = await loadAndConfigureGapi();
+  await classroom.courses.courseWork.create({courseId, resource});
+}
+
+
+function extractLessonMetadata(slides) {
+  const [,
+    fullLessonNumber,
+    unitString,
+    projectString,
+    lessonString,
+    title
+  ] = /\b((\d+)\.(P)?(\d*)) (?:LP )?(.+)(?: \d{4}-\d{4})?$/.exec(slides.name);
+
+  return {
+    fullLessonNumber,
+    isProject: Boolean(projectString),
+    lessonNumber: Number(lessonString || ''),
+    title,
+    unitNumber: Number(unitString),
+  };
+}
+
+function dateTime(date, msOffset) {
+  return addMilliseconds(startOfDay(date), msOffset);
 }
 
 function apiDate(date) {
