@@ -12,6 +12,7 @@ export default async function addLessonToClassroom({
   lessonPlan: {
     doNowPrompt,
     doNowStarterCodeUrl,
+    exitTicketPrompt,
     independentPracticeStarterCodeUrl,
     objective,
     vocabulary,
@@ -45,6 +46,13 @@ export default async function addLessonToClassroom({
     startDateTime,
     title,
     vocabulary,
+  });
+
+  await addExitTicket({
+    courseId,
+    endDateTime,
+    fullLessonNumber,
+    prompt: exitTicketPrompt,
   });
 }
 
@@ -92,7 +100,7 @@ async function addSlides({
   const dueDateTime = addMinutes(endDateTime, 10);
 
   const resource = {
-    description: `${objective}\n\nVocab: ${vocabulary}`,
+    description: `Objective: ${objective}\nVocabulary: ${vocabulary}`,
     dueDate: apiDate(dueDateTime),
     dueTime: apiTime(dueDateTime),
     materials: [{driveFile: {driveFile: {id: slides.id}}}],
@@ -113,6 +121,30 @@ async function addSlides({
   if (homework) {
     resource.materials.push({driveFile: {driveFile: {id: homework.id}}});
   }
+
+  const {client: {classroom}} = await loadAndConfigureGapi();
+  await classroom.courses.courseWork.create({courseId, resource});
+}
+
+async function addExitTicket({
+  courseId,
+  endDateTime,
+  fullLessonNumber,
+  prompt,
+}) {
+  if (!prompt) return;
+
+  const dueDateTime = addMinutes(endDateTime, 10);
+
+  const resource = {
+    description: prompt,
+    dueDate: apiDate(dueDateTime),
+    dueTime: apiTime(dueDateTime),
+    maxPoints: 0,
+    scheduledTime: apiTimestamp(addMinutes(endDateTime, -10)),
+    title: `${fullLessonNumber} Exit Ticket`,
+    workType: 'SHORT_ANSWER_QUESTION',
+  };
 
   const {client: {classroom}} = await loadAndConfigureGapi();
   await classroom.courses.courseWork.create({courseId, resource});

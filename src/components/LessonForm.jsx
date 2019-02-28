@@ -21,7 +21,6 @@ const schema = yup.object().shape({
     .default(''),
 
   exitTicketPrompt: yup.string()
-    .required('Enter the Exit Ticket prompt')
     .default(''),
 
   independentPracticeStarterCodeUrl: yup.string()
