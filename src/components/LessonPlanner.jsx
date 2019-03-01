@@ -12,7 +12,7 @@ import UnitPicker from './UnitPicker';
 import ProgramForm from './ProgramForm';
 
 export default function LessonPlanner() {
-  const [classroomMaterials, setClassroomMaterials] = useState();
+  const [classroomMaterials] = useState();
   const [course, setCourse] = useState();
   const [date, setDate] = useState();
   const [lessonPlan, setLessonPlan] = useState();
