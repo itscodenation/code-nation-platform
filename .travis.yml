@@ -13,7 +13,7 @@ before_deploy: docker run --rm -v "$(pwd)/build:/app/build" $IMAGE_NAME yarn bui
 deploy:
   on:
     branch: master
-    repo: ScriptEdCurriculum/code-nation-platform
+    repo: ScriptEdcurriculum/code-nation-platform
   skip_cleanup: true
   provider: firebase
   token:
