@@ -18,7 +18,7 @@ export default async function addLessonToClassroom({
     vocabulary,
   },
   programDetails: {startTime, endTime},
-  programMaterials: {guidedNotes, homework, slides},
+  programMaterials: {guidedNotes, homework, rubric, slides},
 }) {
   const {fullLessonNumber, isProject, title} =
     extractLessonMetadata(slides);
@@ -42,6 +42,7 @@ export default async function addLessonToClassroom({
     homework,
     independentPracticeStarterCodeUrl,
     objective,
+    rubric,
     slides,
     startDateTime,
     title,
@@ -92,6 +93,7 @@ async function addSlides({
   homework,
   independentPracticeStarterCodeUrl,
   objective,
+  rubric,
   slides,
   startDateTime,
   title,
@@ -99,8 +101,13 @@ async function addSlides({
 }) {
   const dueDateTime = addMinutes(endDateTime, 10);
 
+  let description = `Objective: ${objective}`;
+  if (vocabulary) {
+    description = `${description}\nVocabulary: ${vocabulary}`
+  }
+
   const resource = {
-    description: `Objective: ${objective}\nVocabulary: ${vocabulary}`,
+    description,
     dueDate: apiDate(dueDateTime),
     dueTime: apiTime(dueDateTime),
     materials: [{driveFile: {driveFile: {id: slides.id}}}],
@@ -120,6 +127,10 @@ async function addSlides({
 
   if (homework) {
     resource.materials.push({driveFile: {driveFile: {id: homework.id}}});
+  }
+
+  if (rubric) {
+    resource.materials.push({driveFile: {driveFile: {id: rubric.id}}});
   }
 
   const {client: {classroom}} = await loadAndConfigureGapi();
