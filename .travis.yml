@@ -1,0 +1,21 @@
+language: node
+branches:
+  only:
+    - master
+services:
+- docker
+env:
+- IMAGE_NAME=codenation/code-nation-platform
+install:
+- docker build -t $IMAGE_NAME .
+script: docker run --rm -e CI=true $IMAGE_NAME yarn test
+before_deploy: docker run --rm -v "$(pwd)/build:/app/build" $IMAGE_NAME yarn build
+deploy:
+  on:
+    branch: master
+    repo: ScriptEdCurriculum/code-nation-platform
+  skip_cleanup: true
+  provider: firebase
+  token:
+    secure: gSm/fPf/6Sqp3VYWZNTCE0FaOeirmabS1IDIut6Pcl3XiLJa7ugw1Q5JiET6GTk3cyuf1ypfOpvJgDWs5ZZ3Y5T9x5xiG+dbKq3x3Kjk5g7if5f13v32hVbLB5HhkrzTOEGm9oOScI6mceSQTwuM6GA9/+WR1FC8VkVVx0ZPaH3fltjTrwv54q401tnxG7R2pJQ1X48SULwA/6NfEckQfV3ULCfJSScmymCpJDwN1Dt0tgsvgigYcaT1Aictcot+atlAp2cHINu2s2eWW/EwsyPIs6Q27qd4R2OFceFIWIBOW1w+6uYLwwoTCozHFS1L4f3HyIoDEOupPtIGrJubZ8ZqYTMvXrNOXGkrhKHm7VOKqLurSpLT3zFexkw0AZvmJBYKXZyiXTqSdXSIe1K5iqy40/3P07pAciv0KxSgqwAApA7fRSHeBZ8kudzUW0eC1qzlr9jiZRvkMNYpf2YwqUjkCbuILKjPiFnGAWnsF7qd1zdCrk/b9UoEWRsNiQ7yFIJsIbuI9e0DsuqtWjpgy+lM0VD/lgrNGSZTP1qy6726VIjZHXuEjGkpG+pPZG2m3SNSS0GnaVKbkFHnVVAX6ZXAS/98TfajKFQbYnIgP7Fq4GBK2jST4IPTWOs2y0++YwYzLc/yse0Ge5qGolzlcLHR7a5Xk5mehOrlBUfX3ZU=
+  project: $REACT_APP_FIREBASE_PROJECT_ID

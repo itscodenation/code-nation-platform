@@ -2,20 +2,24 @@ version: "3.7"
 services:
   app:
     command: yarn start
-    image: node:10
+    build: .
     ports:
       - 3000:3000
     volumes:
       - .:/app
+      - app-node_modules:/app/node_modules
     working_dir: /app
   functions:
     command: yarn --cwd functions run firebase serve --host 0.0.0.0
-    image: node:6
+    build: functions
     ports:
       - 5000:5000
     volumes:
       - .:/app
       - firebase-config:/root/.config
+      - functions-node_modules:/app/functions/node_modules
     working_dir: /app
 volumes:
   ? firebase-config
+  ? app-node_modules
+  ? functions-node_modules
