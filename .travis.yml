@@ -5,19 +5,21 @@ branches:
   only:
     - master
 services:
-- docker
+  - docker
 env:
-- IMAGE_NAME=codenation/code-nation-platform
+  - APP_IMAGE_NAME=codenation/code-nation-platform-app
+  - FUNCTIONS_IMAGE_NAME=codenation/code-nation-platform-functions
 install:
-- docker build -t $IMAGE_NAME .
-script: docker run --rm -e CI=true $IMAGE_NAME yarn test
+  - docker build -t $APP_IMAGE_NAME .
+  - docker build -t $FUNCTIONS_IMAGE_NAME functions
+script:
+  - docker run --rm -e CI=true $APP_IMAGE_NAME yarn test
 before_deploy:
-  - docker run --rm -v "$(pwd)/build:/app/build" $IMAGE_NAME yarn build
-  - npm install -g firebase-tools
+  - docker run --rm -v "$(pwd)/build:/app/build" $APP_IMAGE_NAME yarn build
 deploy:
   on:
     branch: master
     repo: ScriptEdcurriculum/code-nation-platform
-  script: firebase deploy --force --project code-nation-platform-prod --public ./build
+  script: docker run --rm -e FIREBASE_TOKEN $FUNCTIONS_IMAGE_NAME yarn --cwd functions run firebase deploy --force --project $REACT_APP_FIREBASE_PROJECT_ID --public ./build
   skip_cleanup: true
   provider: script
