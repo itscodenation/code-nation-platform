@@ -1,6 +1,6 @@
 FROM node:6
 
-COPY package.json yarn.lock /app/functions/
+COPY functions/package.json functions/yarn.lock /app/functions/
 WORKDIR /app
 RUN yarn --cwd functions install --frozen-lockfile
-COPY . /app/functions
+COPY . /app
