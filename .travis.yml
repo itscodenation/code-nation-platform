@@ -1,6 +1,4 @@
-language: node_js
-node_js:
-  - '10'
+language: node
 branches:
   only:
     - master
@@ -27,12 +25,12 @@ deploy:
     -e FIREBASE_TOKEN
     -v "$(pwd)/build:/app/build"
     $FUNCTIONS_IMAGE_NAME
-      yarn
-      --cwd functions
-      run
-        firebase deploy
-        --force
-        --project $REACT_APP_FIREBASE_PROJECT_ID
-        --public ./build
+    yarn
+    --cwd functions
+    run
+    firebase deploy
+    --force
+    --project $REACT_APP_FIREBASE_PROJECT_ID
+    --public ./build
   skip_cleanup: true
   provider: script
