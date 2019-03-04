@@ -23,6 +23,7 @@ deploy:
     docker run
     --rm
     -e FIREBASE_TOKEN
+    -e RESOURCE_DIR=functions
     -v "$(pwd)/build:/app/build"
     $FUNCTIONS_IMAGE_NAME
     yarn
