@@ -11,7 +11,9 @@ services:
     working_dir: /app
   functions:
     command: yarn --cwd functions run firebase serve --host 0.0.0.0
-    build: functions
+    build:
+      context: .
+      dockerfile: functions/Dockerfile
     ports:
       - 5000:5000
     volumes:
