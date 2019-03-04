@@ -7,8 +7,9 @@ branches:
 services:
   - docker
 env:
-  - APP_IMAGE_NAME=codenation/code-nation-platform-app
-  - FUNCTIONS_IMAGE_NAME=codenation/code-nation-platform-functions
+  global:
+    - APP_IMAGE_NAME=codenation/code-nation-platform-app
+    - FUNCTIONS_IMAGE_NAME=codenation/code-nation-platform-functions
 install:
   - docker build -t $APP_IMAGE_NAME .
   - docker build -t $FUNCTIONS_IMAGE_NAME functions
