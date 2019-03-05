@@ -41,6 +41,7 @@ export default async function addLessonToClassroom({
     guidedNotes,
     homework,
     independentPracticeStarterCodeUrl,
+    isProject,
     objective,
     rubric,
     slides,
@@ -89,9 +90,8 @@ async function addSlides({
   courseId,
   endDateTime,
   fullLessonNumber,
-  guidedNotes,
-  homework,
   independentPracticeStarterCodeUrl,
+  isProject,
   objective,
   rubric,
   slides,
@@ -111,7 +111,7 @@ async function addSlides({
     dueDate: apiDate(dueDateTime),
     dueTime: apiTime(dueDateTime),
     materials: [{driveFile: {driveFile: {id: slides.id}}}],
-    maxPoints: 0,
+    maxPoints: isProject ? 100 : 0,
     scheduledTime: apiTimestamp(addMinutes(startDateTime, -5)),
     title: `${fullLessonNumber} ${title}`,
     workType: 'ASSIGNMENT',
@@ -119,14 +119,6 @@ async function addSlides({
 
   if (independentPracticeStarterCodeUrl) {
     resource.materials.push({link: {url: independentPracticeStarterCodeUrl}});
-  }
-
-  if (guidedNotes) {
-    resource.materials.push({driveFile: {driveFile: {id: guidedNotes.id}}});
-  }
-
-  if (homework) {
-    resource.materials.push({driveFile: {driveFile: {id: homework.id}}});
   }
 
   if (rubric) {
