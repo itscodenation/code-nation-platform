@@ -5,7 +5,12 @@ import './i18n';
 import App from './components/App';
 import * as serviceWorker from './serviceWorker';
 
-ReactDOM.render(<App />, document.getElementById('root'));
+import {ErrorBoundary} from './services/bugsnag';
+
+ReactDOM.render(
+  <ErrorBoundary><App /></ErrorBoundary>,
+  document.getElementById('root'),
+);
 
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.
