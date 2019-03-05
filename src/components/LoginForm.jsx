@@ -27,8 +27,12 @@ export default function Main({onSignedIn}) {
               <Form.Group>
                 <Button
                   onClick={async() => {
-                    const {user} = await signInWithGoogle();
-                    onSignedIn(user);
+                    try {
+                      const {user} = await signInWithGoogle();
+                      onSignedIn(user);
+                    } catch (e) {
+                      console.error(e);
+                    }
                   }}
                 >Log in</Button>
               </Form.Group>
