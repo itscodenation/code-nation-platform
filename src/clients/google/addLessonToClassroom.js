@@ -26,36 +26,48 @@ export default async function addLessonToClassroom({
   const startDateTime = dateTime(date, startTime);
   const endDateTime = dateTime(date, endTime);
 
-  await addDoNow({
-    courseId,
-    fullLessonNumber,
-    prompt: doNowPrompt,
-    startDateTime,
-    starterCodeUrl: doNowStarterCodeUrl,
-  });
+  const [
+    doNowAssignment,
+    slidesAssignment,
+    exitTicketQuestion
+  ] = await Promise.all([
+    addDoNow({
+      courseId,
+      fullLessonNumber,
+      prompt: doNowPrompt,
+      startDateTime,
+      starterCodeUrl: doNowStarterCodeUrl,
+    }),
 
-  await addSlides({
-    courseId,
-    endDateTime,
-    fullLessonNumber,
-    guidedNotes,
-    homework,
-    independentPracticeStarterCodeUrl,
-    isProject,
-    objective,
-    rubric,
-    slides,
-    startDateTime,
-    title,
-    vocabulary,
-  });
+    addSlides({
+      courseId,
+      endDateTime,
+      fullLessonNumber,
+      guidedNotes,
+      homework,
+      independentPracticeStarterCodeUrl,
+      isProject,
+      objective,
+      rubric,
+      slides,
+      startDateTime,
+      title,
+      vocabulary,
+    }),
 
-  await addExitTicket({
-    courseId,
-    endDateTime,
-    fullLessonNumber,
-    prompt: exitTicketPrompt,
-  });
+    addExitTicket({
+      courseId,
+      endDateTime,
+      fullLessonNumber,
+      prompt: exitTicketPrompt,
+    }),
+  ]);
+
+  return {
+    doNow: doNowAssignment,
+    slides: slidesAssignment,
+    exitTicket: exitTicketQuestion,
+  };
 }
 
 async function addDoNow({

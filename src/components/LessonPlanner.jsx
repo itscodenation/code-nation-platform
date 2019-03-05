@@ -3,6 +3,7 @@ import isUndefined from 'lodash-es/isUndefined';
 import React, {useState} from 'react';
 
 import AddToClassroom from './AddToClassroom';
+import CenterAll from './layout/CenterAll';
 import CloneProgramMaterials from './CloneProgramMaterials';
 import CoursePicker from './CoursePicker';
 import DatePicker from './DatePicker';
@@ -10,9 +11,10 @@ import LessonForm from './LessonForm';
 import LessonPicker from './LessonPicker';
 import UnitPicker from './UnitPicker';
 import ProgramForm from './ProgramForm';
+import LessonMaterials from './LessonMaterials';
 
 export default function LessonPlanner() {
-  const [classroomMaterials] = useState();
+  const [classroomMaterials, setClassroomMaterials] = useState();
   const [course, setCourse] = useState();
   const [date, setDate] = useState();
   const [lessonPlan, setLessonPlan] = useState();
@@ -65,18 +67,28 @@ export default function LessonPlanner() {
         lessonPlan={lessonPlan}
         programDetails={programDetails}
         programMaterials={programMaterials}
+        onComplete={setClassroomMaterials}
       />
     );
   } else {
     return (
-      <div>
+      <CenterAll>
         <p>Program: {course.name}</p>
-        <p>Program details: <code>{JSON.stringify(programDetails)}</code></p>
         <p>Unit: {unit.name}</p>
         <p>Lesson: {masterMaterials.slides.name}</p>
         <p>Date: {format(date, 'MMMM d')}</p>
-        <p>Lesson Plan: <code>{JSON.stringify(lessonPlan)}</code></p>
-      </div>
+        <p>Program materials:</p>
+        <LessonMaterials lessonMaterials={programMaterials} />
+        <p>
+          <a
+            href={course.alternateLink}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            View in Google Classroom
+          </a>
+        </p>
+      </CenterAll>
     );
   }
 }

@@ -3,13 +3,12 @@ import Col from 'react-bootstrap/Col';
 import Container from 'react-bootstrap/Container';
 import Form from 'react-bootstrap/Form';
 import {Formik, Field} from 'formik';
-import map from 'lodash-es/map';
 import React from 'react';
 import Row from 'react-bootstrap/Row';
 import * as yup from 'yup';
 
 import CenterAll from './layout/CenterAll';
-import {useTranslation} from 'react-i18next';
+import LessonMaterials from './LessonMaterials';
 
 const schema = yup.object().shape({
   doNowPrompt: yup.string()
@@ -59,30 +58,13 @@ function LessonFormField({
 }
 
 export default function LessonForm({lessonMaterials, onSubmit}) {
-  const {t} = useTranslation();
-
   return (
     <CenterAll centerText={false} lg={8}>
       <Container>
         <Row>
           <Col lg={4}>
             <h3>Lesson materials</h3>
-            <ul>
-              {map(
-                lessonMaterials,
-                ({webViewLink}, type) => (
-                  <li key={type}>
-                    <a
-                      href={webViewLink}
-                      rel="noopener noreferrer"
-                      target="_blank"
-                    >
-                      {t(`materials.${type}`)}
-                    </a>
-                  </li>
-                )
-              )}
-            </ul>
+            <LessonMaterials lessonMaterials={lessonMaterials} />
           </Col>
 
           <Col lg={8}>
