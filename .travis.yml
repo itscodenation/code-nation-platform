@@ -14,7 +14,16 @@ install:
 script:
   - docker run --rm -e CI=true $APP_IMAGE_NAME yarn test
 before_deploy:
-  - docker run --rm -v "$(pwd)/build:/app/build" $APP_IMAGE_NAME yarn build
+  - >-
+    docker run
+    --rm
+    -e REACT_APP_FIREBASE_API_KEY
+    -e REACT_APP_FIREBASE_PROJECT_ID
+    -e REACT_APP_GOOGLE_CLIENT_ID
+    -e REACT_APP_MASTER_CURRICULUM_FOLDER_ID
+    -v "$(pwd)/build:/app/build"
+    $APP_IMAGE_NAME
+    yarn build
 deploy:
   on:
     branch: master
