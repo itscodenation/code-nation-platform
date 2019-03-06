@@ -1,7 +1,6 @@
 import escapeQuotes from 'escape-quotes';
+import filter from 'lodash-es/filter';
 import isNil from 'lodash-es/isNil';
-import last from 'lodash-es/last';
-import map from 'lodash-es/map';
 import merge from 'lodash-es/merge';
 
 import {loadAndConfigureGapi} from '../../services/gapi';
@@ -34,12 +33,16 @@ export default async function loadLessons({id: unitId}) {
     }
   }
 
-  return sortLessons(Array.from(lessonMap.values()));
+  return sortLessons(filter(
+    Array.from(lessonMap.values()),
+    'materials.slides',
+  ));
 }
 
 function identifyLessonFile(file) {
   const parsedFilename =
-    /^(\d+\.(\d+)|PR?(\d?)) (?:([A-Z]{2}) )?(.+)(?: \d{4}-\d{4})?$/.exec(file.name);
+    /^(\d+\.(?:(\d+)|PR?(\d?))) (?:([A-Z]{2}) )?(.+?)(?: \d{2,4}-\d{2,4})?$/
+      .exec(file.name);
   if (parsedFilename) {
     const [
       fullMatch,
