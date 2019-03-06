@@ -17,6 +17,7 @@ before_deploy:
   - >-
     docker run
     --rm
+    -e REACT_APP_BUGSNAG_API_KEY
     -e REACT_APP_FIREBASE_API_KEY
     -e REACT_APP_FIREBASE_PROJECT_ID
     -e REACT_APP_GOOGLE_CLIENT_ID
