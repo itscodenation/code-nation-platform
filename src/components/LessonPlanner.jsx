@@ -1,5 +1,5 @@
 import format from 'date-fns/format';
-import isUndefined from 'lodash-es/isUndefined';
+import isNil from 'lodash-es/isNil';
 import React, {useState} from 'react';
 
 import AddToClassroom from './AddToClassroom';
@@ -17,31 +17,32 @@ export default function LessonPlanner() {
   const [classroomMaterials, setClassroomMaterials] = useState();
   const [course, setCourse] = useState();
   const [date, setDate] = useState();
+  const [dueDate, setDueDate] = useState();
   const [lessonPlan, setLessonPlan] = useState();
   const [masterLesson, setMasterLesson] = useState();
   const [programDetails, setProgramDetails] = useState();
   const [programLesson, setProgramLesson] = useState();
   const [unit, setUnit] = useState();
 
-  if (isUndefined(course)) {
+  if (isNil(course)) {
     return <CoursePicker onPick={setCourse} />;
-  } else if (isUndefined(programDetails)) {
+  } else if (isNil(programDetails)) {
     return (
       <ProgramForm
         course={course}
         onSubmit={setProgramDetails}
       />
     );
-  } else if (isUndefined(unit))  {
+  } else if (isNil(unit))  {
     return <UnitPicker onPick={setUnit} />;
-  } else if (isUndefined(masterLesson)) {
+  } else if (isNil(masterLesson)) {
     return (
       <LessonPicker
         unit={unit}
         onPick={setMasterLesson}
       />
     );
-  } else if (isUndefined(programLesson)) {
+  } else if (isNil(programLesson)) {
     return (
       <CloneProgramMaterials
         date={date}
@@ -52,7 +53,7 @@ export default function LessonPlanner() {
         }}
       />
     );
-  } else if (isUndefined(date)) {
+  } else if (isNil(date)) {
     return <DatePicker onPick={setDate} />;
   } else if (isUndefined(lessonPlan)) {
     return (
@@ -61,7 +62,7 @@ export default function LessonPlanner() {
         onSubmit={setLessonPlan}
       />
     );
-  } else if (isUndefined(classroomMaterials)) {
+  } else if (isNil(classroomMaterials)) {
     return (
       <AddToClassroom
         course={course}
