@@ -18,9 +18,9 @@ export default function LessonPlanner() {
   const [course, setCourse] = useState();
   const [date, setDate] = useState();
   const [lessonPlan, setLessonPlan] = useState();
-  const [masterMaterials, setMasterMaterials] = useState();
+  const [masterLesson, setMasterLesson] = useState();
   const [programDetails, setProgramDetails] = useState();
-  const [programMaterials, setProgramMaterials] = useState();
+  const [programLesson, setProgramLesson] = useState();
   const [unit, setUnit] = useState();
 
   if (isUndefined(course)) {
@@ -34,20 +34,22 @@ export default function LessonPlanner() {
     );
   } else if (isUndefined(unit))  {
     return <UnitPicker onPick={setUnit} />;
-  } else if (isUndefined(masterMaterials)) {
+  } else if (isUndefined(masterLesson)) {
     return (
       <LessonPicker
         unit={unit}
-        onPick={setMasterMaterials}
+        onPick={setMasterLesson}
       />
     );
-  } else if (isUndefined(programMaterials)) {
+  } else if (isUndefined(programLesson)) {
     return (
       <CloneProgramMaterials
         date={date}
-        masterMaterials={masterMaterials}
+        masterMaterials={masterLesson.materials}
         programDetails={programDetails}
-        onCloned={setProgramMaterials}
+        onCloned={(materials) => {
+          setProgramLesson({...masterLesson, materials});
+        }}
       />
     );
   } else if (isUndefined(date)) {
@@ -55,7 +57,7 @@ export default function LessonPlanner() {
   } else if (isUndefined(lessonPlan)) {
     return (
       <LessonForm
-        lessonMaterials={programMaterials}
+        lessonMaterials={programLesson.materials}
         onSubmit={setLessonPlan}
       />
     );
@@ -64,9 +66,9 @@ export default function LessonPlanner() {
       <AddToClassroom
         course={course}
         date={date}
+        lesson={programLesson}
         lessonPlan={lessonPlan}
         programDetails={programDetails}
-        programMaterials={programMaterials}
         onComplete={setClassroomMaterials}
       />
     );
@@ -75,10 +77,10 @@ export default function LessonPlanner() {
       <CenterAll>
         <p>Program: {course.name}</p>
         <p>Unit: {unit.name}</p>
-        <p>Lesson: {masterMaterials.slides.name}</p>
+        <p>Lesson: {programLesson.materials.slides.name}</p>
         <p>Date: {format(date, 'MMMM d')}</p>
         <p>Program materials:</p>
-        <LessonMaterials lessonMaterials={programMaterials} />
+        <LessonMaterials lessonMaterials={programLesson.materials} />
         <p>
           <a
             href={course.alternateLink}

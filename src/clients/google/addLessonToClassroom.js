@@ -18,11 +18,13 @@ export default async function addLessonToClassroom({
     vocabulary,
   },
   programDetails: {startTime, endTime},
-  programMaterials: {guidedNotes, homework, rubric, slides},
+  lesson: {
+    isProject,
+    lessonId,
+    materials: {guidedNotes, homework, rubric, slides},
+    title,
+  },
 }) {
-  const {fullLessonNumber, isProject, title} =
-    extractLessonMetadata(slides);
-
   const startDateTime = dateTime(date, startTime);
   const endDateTime = dateTime(date, endTime);
 
@@ -33,7 +35,7 @@ export default async function addLessonToClassroom({
   ] = await Promise.all([
     addDoNow({
       courseId,
-      fullLessonNumber,
+      lessonId,
       prompt: doNowPrompt,
       startDateTime,
       starterCodeUrl: doNowStarterCodeUrl,
@@ -42,11 +44,11 @@ export default async function addLessonToClassroom({
     addSlides({
       courseId,
       endDateTime,
-      fullLessonNumber,
       guidedNotes,
       homework,
       independentPracticeStarterCodeUrl,
       isProject,
+      lessonId,
       objective,
       rubric,
       slides,
@@ -58,7 +60,7 @@ export default async function addLessonToClassroom({
     addExitTicket({
       courseId,
       endDateTime,
-      fullLessonNumber,
+      lessonId,
       prompt: exitTicketPrompt,
     }),
   ]);
@@ -72,7 +74,7 @@ export default async function addLessonToClassroom({
 
 async function addDoNow({
   courseId,
-  fullLessonNumber,
+  lessonId,
   prompt,
   starterCodeUrl,
   startDateTime,
@@ -86,7 +88,7 @@ async function addDoNow({
     dueDate: apiDate(dueDateTime),
     dueTime: apiTime(dueDateTime),
     scheduledTime: apiTimestamp(addMinutes(startDateTime, -5)),
-    title: `${fullLessonNumber} Do Now`,
+    title: `${lessonId} Do Now`,
     maxPoints: 0,
     workType: 'ASSIGNMENT',
   };
@@ -101,7 +103,7 @@ async function addDoNow({
 async function addSlides({
   courseId,
   endDateTime,
-  fullLessonNumber,
+  lessonId,
   independentPracticeStarterCodeUrl,
   isProject,
   objective,
@@ -125,7 +127,7 @@ async function addSlides({
     materials: [{driveFile: {driveFile: {id: slides.id}}}],
     maxPoints: isProject ? 100 : 0,
     scheduledTime: apiTimestamp(addMinutes(startDateTime, -5)),
-    title: `${fullLessonNumber} ${title}`,
+    title: `${lessonId} ${title}`,
     workType: 'ASSIGNMENT',
   };
 
@@ -144,7 +146,7 @@ async function addSlides({
 async function addExitTicket({
   courseId,
   endDateTime,
-  fullLessonNumber,
+  lessonId,
   prompt,
 }) {
   if (!prompt) return;
@@ -157,31 +159,12 @@ async function addExitTicket({
     dueTime: apiTime(dueDateTime),
     maxPoints: 0,
     scheduledTime: apiTimestamp(addMinutes(endDateTime, -10)),
-    title: `${fullLessonNumber} Exit Ticket`,
+    title: `${lessonId} Exit Ticket`,
     workType: 'SHORT_ANSWER_QUESTION',
   };
 
   const {client: {classroom}} = await loadAndConfigureGapi();
   await classroom.courses.courseWork.create({courseId, resource});
-}
-
-
-function extractLessonMetadata(slides) {
-  const [,
-    fullLessonNumber,
-    unitString,
-    projectString,
-    lessonString,
-    title
-  ] = /\b((\d+)\.(P)?(\d*)) (?:LP )?(.+)(?: \d{4}-\d{4})?$/.exec(slides.name);
-
-  return {
-    fullLessonNumber,
-    isProject: Boolean(projectString),
-    lessonNumber: Number(lessonString || ''),
-    title,
-    unitNumber: Number(unitString),
-  };
 }
 
 function dateTime(date, msOffset) {

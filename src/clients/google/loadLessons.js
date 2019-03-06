@@ -1,6 +1,8 @@
 import escapeQuotes from 'escape-quotes';
+import isNil from 'lodash-es/isNil';
 import last from 'lodash-es/last';
 import map from 'lodash-es/map';
+import merge from 'lodash-es/merge';
 
 import {loadAndConfigureGapi} from '../../services/gapi';
 
@@ -23,41 +25,57 @@ export default async function loadLessons({id: unitId}) {
 
   for await (const {files} of eachPage) {
     for (const file of files) {
-      const {type, index} = identifyLessonFile(file) || {};
+      const lesson = identifyLessonFile(file);
 
-      if (type) {
-        if (!lessonMap.has(index)) {
-          lessonMap.set(index, {});
-        }
-        const lesson = lessonMap.get(index);
-        lesson[type] = file;
+      if (lesson) {
+        const {lessonId} = lesson;
+        lessonMap.set(lessonId, merge(lesson, lessonMap.get(lessonId)));
       }
     }
   }
 
-  return sortLessons(Array.from(lessonMap.entries()));
+  return sortLessons(Array.from(lessonMap.values()));
 }
 
 function identifyLessonFile(file) {
   const parsedFilename =
-    /^(?:\d+)\.(\d+|PR?\d?) (?:([A-Z]{2}) )?(?:.+)$/.exec(file.name);
+    /^(\d+\.(\d+)|PR?(\d?)) (?:([A-Z]{2}) )?(.+)(?: \d{4}-\d{4})?$/.exec(file.name);
   if (parsedFilename) {
-    const [, index, typeAbbreviation] = parsedFilename;
+    const [
+      fullMatch,
+      lessonId,
+      lessonNumber,
+      projectNumber,
+      typeAbbreviation,
+      title,
+    ] = parsedFilename;
+
+    if (isNil(fullMatch)) return;
+
+    const lessonProps = {
+      isProject: /\.P/.test(lessonId),
+      lessonId,
+      number: Number(lessonNumber || projectNumber || 1),
+      title,
+    }
+
     if (typeAbbreviation in LESSON_MATERIAL_ABBREVIATIONS) {
+      const type = LESSON_MATERIAL_ABBREVIATIONS[typeAbbreviation];
       return {
-        index,
-        type: LESSON_MATERIAL_ABBREVIATIONS[typeAbbreviation],
+        ...lessonProps,
+        materials: {[type]: file},
       };
     } else if (!typeAbbreviation) {
-      if (index.startsWith('PR')) {
+      if (/\.PR/.test(lessonId)) {
         return {
-          index: index.replace(/^PR/, 'P'),
-          type: 'rubric',
+          ...lessonProps,
+          lessonId: lessonId.replace(/\.PR/, '.P'),
+          materials: {rubric: file}
         };
       } else if (file.mimeType === 'application/vnd.google-apps.presentation') {
         return {
-          index,
-          type: 'slides',
+          ...lessonProps,
+          materials: {slides: file}
         };
       }
     }
@@ -65,21 +83,15 @@ function identifyLessonFile(file) {
 }
 
 function sortLessons(lessons) {
-  return map(
-    lessons.sort(
-      ([index1], [index2]) => {
-        const lesson1IsProject = index1.startsWith('P');
-        const lesson2IsProject = index2.startsWith('P');
+  return lessons.sort(
+    (
+      {isProject: lesson1IsProject, number: number1},
+      {isProject: lesson2IsProject, number: number2}
+    ) => {
+      if (lesson1IsProject && !lesson2IsProject) return 1;
+      if (lesson2IsProject && !lesson1IsProject) return -1;
 
-        if (lesson1IsProject && !lesson2IsProject) return 1;
-        if (lesson2IsProject && !lesson1IsProject) return -1;
-
-        const numericIndex1 = Number(/\d+$/.exec(index1)[0]);
-        const numericIndex2 = Number(/\d+$/.exec(index2)[0]);
-
-        return numericIndex1 - numericIndex2;
-      }
-    ),
-    last
+      return number1 - number2;
+    }
   );
 }
