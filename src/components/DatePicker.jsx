@@ -15,12 +15,16 @@ function nextWeekday(date = new Date()) {
   return nextDay;
 }
 
-export default function DatePicker({onPick}) {
-  const [selected, updateSelected] = useState(nextWeekday());
+export default function DatePicker({
+  defaultDate = nextWeekday(),
+  header = 'When is the program session?',
+  onPick,
+}) {
+  const [selected, updateSelected] = useState(defaultDate);
 
   return (
     <CenterAll>
-      <h2>When is the program session?</h2>
+      <h2>{header}</h2>
       <div>
         <ReactDatePicker
           inline

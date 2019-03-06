@@ -9,6 +9,7 @@ import {loadAndConfigureGapi} from '../../services/gapi';
 export default async function addLessonToClassroom({
   course: {id: courseId},
   date,
+  dueDate,
   lessonPlan: {
     doNowPrompt,
     doNowStarterCodeUrl,
@@ -27,6 +28,7 @@ export default async function addLessonToClassroom({
 }) {
   const startDateTime = dateTime(date, startTime);
   const endDateTime = dateTime(date, endTime);
+  const dueDateTime = dateTime(dueDate || date, endTime);
 
   const [
     doNowAssignment,
@@ -43,7 +45,7 @@ export default async function addLessonToClassroom({
 
     addSlides({
       courseId,
-      endDateTime,
+      dueDateTime,
       guidedNotes,
       homework,
       independentPracticeStarterCodeUrl,
@@ -102,7 +104,7 @@ async function addDoNow({
 
 async function addSlides({
   courseId,
-  endDateTime,
+  dueDateTime,
   lessonId,
   independentPracticeStarterCodeUrl,
   isProject,
@@ -113,7 +115,7 @@ async function addSlides({
   title,
   vocabulary,
 }) {
-  const dueDateTime = addMinutes(endDateTime, 10);
+  const dueDateTimeWithGracePeriod = addMinutes(dueDateTime, 10);
 
   let description = `Objective: ${objective}`;
   if (vocabulary) {
@@ -122,8 +124,8 @@ async function addSlides({
 
   const resource = {
     description,
-    dueDate: apiDate(dueDateTime),
-    dueTime: apiTime(dueDateTime),
+    dueDate: apiDate(dueDateTimeWithGracePeriod),
+    dueTime: apiTime(dueDateTimeWithGracePeriod),
     materials: [{driveFile: {driveFile: {id: slides.id}}}],
     maxPoints: isProject ? 100 : 0,
     scheduledTime: apiTimestamp(addMinutes(startDateTime, -5)),

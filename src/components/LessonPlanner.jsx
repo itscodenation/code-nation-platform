@@ -55,7 +55,15 @@ export default function LessonPlanner() {
     );
   } else if (isNil(date)) {
     return <DatePicker onPick={setDate} />;
-  } else if (isUndefined(lessonPlan)) {
+  } else if (masterLesson.isProject && isNil(dueDate)) {
+    return (
+      <DatePicker
+        defaultDate={date}
+        header='When is the project due?'
+        onPick={setDueDate}
+      />
+    );
+  } else if (isNil(lessonPlan)) {
     return (
       <LessonForm
         lessonMaterials={programLesson.materials}
@@ -67,6 +75,7 @@ export default function LessonPlanner() {
       <AddToClassroom
         course={course}
         date={date}
+        dueDate={dueDate}
         lesson={programLesson}
         lessonPlan={lessonPlan}
         programDetails={programDetails}
