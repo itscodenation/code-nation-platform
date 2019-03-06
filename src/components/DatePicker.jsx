@@ -5,10 +5,18 @@ import 'react-datepicker/dist/react-datepicker.css';
 
 import CenterAll from './layout/CenterAll';
 import Button from 'react-bootstrap/Button';
-import {format, addDays} from 'date-fns';
+import {format, addDays, isWeekend} from 'date-fns';
+
+function nextWeekday(date = new Date()) {
+  const nextDay = addDays(date, 1);
+  if (isWeekend(nextDay)) {
+    return nextWeekday(nextDay);
+  }
+  return nextDay;
+}
 
 export default function DatePicker({onPick}) {
-  const [selected, updateSelected] = useState(addDays(new Date(), 1));
+  const [selected, updateSelected] = useState(nextWeekday());
 
   return (
     <CenterAll>
