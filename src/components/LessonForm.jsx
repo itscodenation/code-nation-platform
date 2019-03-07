@@ -12,7 +12,6 @@ import LessonMaterials from './LessonMaterials';
 
 const schema = yup.object().shape({
   doNowPrompt: yup.string()
-    .required('Enter a Do Now prompt')
     .default(''),
 
   doNowStarterCodeUrl: yup.string()

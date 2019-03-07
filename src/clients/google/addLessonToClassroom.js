@@ -4,6 +4,8 @@ import {
   getUnixTime,
   startOfDay,
 } from 'date-fns/esm';
+import isEmpty from 'lodash-es/isEmpty';
+
 import {loadAndConfigureGapi} from '../../services/gapi';
 
 export default async function addLessonToClassroom({
@@ -81,6 +83,8 @@ async function addDoNow({
   starterCodeUrl,
   startDateTime,
 }) {
+  if (isEmpty(prompt)) return;
+
   const {client: {classroom}} = await loadAndConfigureGapi();
 
   const dueDateTime = addMinutes(startDateTime, 10);
