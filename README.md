@@ -41,7 +41,7 @@ REACT_APP_BUGSNAG_API_KEY=14385c1ebd16bc84362e6ce4e3f14e92
 Aside from the entries above, which you can use as-is, you will need the following:
 
 * `REACT_APP_FIREBASE_API_KEY`: You can get this from the [Firebase console](https://console.firebase.google.com/), or by running `d/yarn.functions firebase setup:web`
-* `REACT_APP_FIREBASE_PROJECT_ID` is the ID of the Firebase project you created earlier.
+* `REACT_APP_FIREBASE_PROJECT_ID` is the ID of the Firebase project you created earlier. You can find it by accessing **Project settings** from the gear icon in the project dashboard; note that you are looking for the **Project ID** not the project name.
 * `REACT_APP_GOOGLE_CLIENT_ID` can be found at the [Google API Console](https://console.cloud.google.com/apis/credentials); there should be an entry under **OAuth 2.0 client IDs**, but if there isn’t, you can create one. Make sure that the client ID has `http://localhost:3000` in its **Authorized JavaScript origins**; if it doesn’t, you may need to create a new client ID and add that to the authorized origins when creating it.
 
 To start the application for development, run this:
