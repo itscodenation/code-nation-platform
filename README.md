@@ -20,7 +20,7 @@ You will need to add your Firebase credentials to the local
 project configuration. If you have not created a Firebase app to use for
 development, [do that now](https://console.firebase.google.com/).
 
-Then run this:
+Then run this and follow the prompts:
 
 ```sh
 $ script/firebase-setup
