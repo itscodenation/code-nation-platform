@@ -21,6 +21,7 @@ const IRREGULAR_UNIT_NAMES = {
 
 export {default as addLessonToClassroom} from './addLessonToClassroom';
 export {default as copyLesson} from './copyLesson';
+export {default as extractLessonPlanFromSlides} from './extractLessonPlanFromSlides';
 export {default as loadLessons} from './loadLessons';
 
 export async function init() {

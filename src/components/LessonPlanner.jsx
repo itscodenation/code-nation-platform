@@ -66,7 +66,7 @@ export default function LessonPlanner() {
   } else if (isNil(lessonPlan)) {
     return (
       <LessonForm
-        lessonMaterials={programLesson.materials}
+        lesson={programLesson}
         onSubmit={setLessonPlan}
       />
     );

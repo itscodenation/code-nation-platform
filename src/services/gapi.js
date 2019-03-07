@@ -12,6 +12,7 @@ const SCOPES = [
 const DISCOVERY_DOCS = [
   'https://www.googleapis.com/discovery/v1/apis/classroom/v1/rest',
   'https://www.googleapis.com/discovery/v1/apis/drive/v3/rest',
+  'https://www.googleapis.com/discovery/v1/apis/slides/v1/rest',
 ];
 
 let isGapiLoadedAndConfigured = false;
