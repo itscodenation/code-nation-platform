@@ -20,6 +20,11 @@ You will need to add your Firebase credentials to the local
 project configuration. If you have not created a Firebase app to use for
 development, [do that now](https://console.firebase.google.com/).
 
+In your Firebase project, you will need to set up a few things:
+
+* Enable Google authentication (navigate to **Authentication** &rarr; **Sign-in method** &rarr; **Google**)
+* Create a Cloud Firestore database (navigate to **Database** and click **Create database** in the Cloud Firestore section); you can leave the permissions in **test mode**
+
 Then run this and follow the prompts:
 
 ```sh
