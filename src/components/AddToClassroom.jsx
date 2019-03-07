@@ -6,9 +6,10 @@ import {addLessonToClassroom} from '../clients/google';
 export default function AddToClassroom({
   course,
   date,
+  dueDate,
+  lesson,
   lessonPlan,
   programDetails,
-  programMaterials,
   onComplete,
 }) {
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -24,9 +25,10 @@ export default function AddToClassroom({
             await addLessonToClassroom({
               course,
               date,
+              dueDate,
+              lesson,
               lessonPlan,
               programDetails,
-              programMaterials,
             }),
           );
         }}

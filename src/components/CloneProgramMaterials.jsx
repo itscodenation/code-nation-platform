@@ -10,7 +10,6 @@ import {getFolderDetails, copyLesson} from '../clients/google';
 import CenterAll from './layout/CenterAll';
 
 export default function CloneProgramMaterials({
-  date,
   masterMaterials,
   programDetails: {lessonMaterialsFolderUrl, programPrefix},
   onCloned,

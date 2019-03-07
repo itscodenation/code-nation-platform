@@ -1,5 +1,5 @@
 import format from 'date-fns/format';
-import isUndefined from 'lodash-es/isUndefined';
+import isNil from 'lodash-es/isNil';
 import React, {useState} from 'react';
 
 import AddToClassroom from './AddToClassroom';
@@ -17,56 +17,68 @@ export default function LessonPlanner() {
   const [classroomMaterials, setClassroomMaterials] = useState();
   const [course, setCourse] = useState();
   const [date, setDate] = useState();
+  const [dueDate, setDueDate] = useState();
   const [lessonPlan, setLessonPlan] = useState();
-  const [masterMaterials, setMasterMaterials] = useState();
+  const [masterLesson, setMasterLesson] = useState();
   const [programDetails, setProgramDetails] = useState();
-  const [programMaterials, setProgramMaterials] = useState();
+  const [programLesson, setProgramLesson] = useState();
   const [unit, setUnit] = useState();
 
-  if (isUndefined(course)) {
+  if (isNil(course)) {
     return <CoursePicker onPick={setCourse} />;
-  } else if (isUndefined(programDetails)) {
+  } else if (isNil(programDetails)) {
     return (
       <ProgramForm
         course={course}
         onSubmit={setProgramDetails}
       />
     );
-  } else if (isUndefined(unit))  {
+  } else if (isNil(unit))  {
     return <UnitPicker onPick={setUnit} />;
-  } else if (isUndefined(masterMaterials)) {
+  } else if (isNil(masterLesson)) {
     return (
       <LessonPicker
         unit={unit}
-        onPick={setMasterMaterials}
+        onPick={setMasterLesson}
       />
     );
-  } else if (isUndefined(programMaterials)) {
+  } else if (isNil(programLesson)) {
     return (
       <CloneProgramMaterials
         date={date}
-        masterMaterials={masterMaterials}
+        masterMaterials={masterLesson.materials}
         programDetails={programDetails}
-        onCloned={setProgramMaterials}
+        onCloned={(materials) => {
+          setProgramLesson({...masterLesson, materials});
+        }}
       />
     );
-  } else if (isUndefined(date)) {
+  } else if (isNil(date)) {
     return <DatePicker onPick={setDate} />;
-  } else if (isUndefined(lessonPlan)) {
+  } else if (masterLesson.isProject && isNil(dueDate)) {
+    return (
+      <DatePicker
+        defaultDate={date}
+        header='When is the project due?'
+        onPick={setDueDate}
+      />
+    );
+  } else if (isNil(lessonPlan)) {
     return (
       <LessonForm
-        lessonMaterials={programMaterials}
+        lessonMaterials={programLesson.materials}
         onSubmit={setLessonPlan}
       />
     );
-  } else if (isUndefined(classroomMaterials)) {
+  } else if (isNil(classroomMaterials)) {
     return (
       <AddToClassroom
         course={course}
         date={date}
+        dueDate={dueDate}
+        lesson={programLesson}
         lessonPlan={lessonPlan}
         programDetails={programDetails}
-        programMaterials={programMaterials}
         onComplete={setClassroomMaterials}
       />
     );
@@ -75,10 +87,10 @@ export default function LessonPlanner() {
       <CenterAll>
         <p>Program: {course.name}</p>
         <p>Unit: {unit.name}</p>
-        <p>Lesson: {masterMaterials.slides.name}</p>
+        <p>Lesson: {programLesson.materials.slides.name}</p>
         <p>Date: {format(date, 'MMMM d')}</p>
         <p>Program materials:</p>
-        <LessonMaterials lessonMaterials={programMaterials} />
+        <LessonMaterials lessonMaterials={programLesson.materials} />
         <p>
           <a
             href={course.alternateLink}

@@ -14,7 +14,7 @@ export default function Picker({
   onPick,
 }) {
   const getItemKey = isFunction(itemKey) ? itemKey : property(itemKey);
-  const getItemLabel = isFunction(itemLabel) ? itemKey : property(itemLabel);
+  const getItemLabel = isFunction(itemLabel) ? itemLabel : property(itemLabel);
 
   return (
     isNull(items) ? (

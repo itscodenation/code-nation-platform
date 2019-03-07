@@ -16,8 +16,8 @@ export default function LessonPicker({unit, onPick}) {
 
   return (
     <Picker
-      itemKey="slides.id"
-      itemLabel="slides.name"
+      itemKey="lessonId"
+      itemLabel={({lessonId, title}) => `${lessonId}: ${title}`}
       items={lessons}
       header="Select a lesson:"
       onPick={onPick}
