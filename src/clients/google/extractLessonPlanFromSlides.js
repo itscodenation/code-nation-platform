@@ -1,3 +1,4 @@
+import AFHConvert from 'ascii-fullwidth-halfwidth-convert';
 import compact from 'lodash-es/compact';
 import defaultTo from 'lodash-es/defaultTo';
 import filter from 'lodash-es/filter';
@@ -17,6 +18,8 @@ import without from 'lodash-es/without';
 
 import {loadAndConfigureGapi} from '../../services/gapi';
 
+const afhConverter = new AFHConvert();
+
 export default async function extractLessonPlanFromSlides(lesson) {
   const {client: {slides}} = await loadAndConfigureGapi();
   const {result: presentation} = await slides.presentations.get({
@@ -34,9 +37,7 @@ export default async function extractLessonPlanFromSlides(lesson) {
 function extractExitTicket(decoratedSlides) {
   for (const {data: {header, body}} of decoratedSlides)  {
     if (/^exit ticket\b/i.test(header)) {
-      return {
-        exitTicketPrompt: replaceSpaceIndentationWithUnicodeFigureSpace(body),
-      };
+      return {exitTicketPrompt: body};
     }
   }
 }
@@ -53,9 +54,7 @@ function extractDoNow(decoratedSlides) {
 
   if (!isNil(bestDoNowSlide)) {
     return {
-      doNowPrompt: replaceSpaceIndentationWithUnicodeFigureSpace(
-         bestDoNowSlide.data.body,
-      ),
+      doNowPrompt: bestDoNowSlide.data.body,
       doNowStarterCodeUrl: first(bestDoNowSlide.data.urls),
     }
   }
@@ -116,7 +115,7 @@ function extractDataFromSlide(source) {
       'position.top',
     ),
     'content'
-  ).join('\n');
+  ).join('\n\n');
 
   const urls = flatMap(textElements, 'urls');
 
@@ -138,7 +137,12 @@ function extractTextElements(pageElements) {
         let maximumTextSize = 0;
         for (const textElement of pageElement.shape.text.textElements) {
           if (isString(get(textElement, 'textRun.content'))) {
-            textFragments.push(get(textElement, 'textRun.content'));
+            const text = get(textElement, 'textRun.content');
+            if (get(textElement, 'textRun.style.fontFamily') === 'Consolas') {
+              textFragments.push(afhConverter.toFullWidth(text));
+            } else {
+              textFragments.push(text);
+            }
             maximumTextSize = Math.max(
               maximumTextSize,
               get(textElement, 'textRun.style.fontSize.magnitude', 0),
@@ -165,12 +169,5 @@ function extractTextElements(pageElements) {
         };
       }
     })
-  );
-}
-
-function replaceSpaceIndentationWithUnicodeFigureSpace(string) {
-  return string.replace(
-    /^ +/gm,
-    spaces => spaces.replace(' ', '\u2007')
   );
 }

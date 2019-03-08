@@ -6,6 +6,7 @@
     "@bugsnag/js": "^6.0.0",
     "@bugsnag/plugin-react": "^6.0.0",
     "@firebase/app-types": "^0.3.4",
+    "ascii-fullwidth-halfwidth-convert": "^0.1.1",
     "classnames": "^2.2.6",
     "date-fns": "^2.0.0-alpha.27",
     "escape-quotes": "^1.0.2",
