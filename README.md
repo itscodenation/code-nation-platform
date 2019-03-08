@@ -16,91 +16,48 @@ Once Docker is installed, run this to bootstrap the containers:
 $ docker-compose up --no-start
 ```
 
-Then run this to install the client-side and functions dependencies
-respectively:
-
-```sh
-$ docker-compose run --rm app yarn
-$ docker-compose run --rm functions yarn --cwd functions
-```
-
-Finally, you will need to add your Firebase credentials to the local
+You will need to add your Firebase credentials to the local
 project configuration. If you have not created a Firebase app to use for
 development, [do that now](https://console.firebase.google.com/).
 
-Then run this:
+In your Firebase project, you will need to set up a few things:
+
+* Enable Google authentication (navigate to **Authentication** &rarr; **Sign-in method** &rarr; **Google**)
+* Create a Cloud Firestore database (navigate to **Database** and click **Create database** in the Cloud Firestore section); you can leave the permissions in **test mode**
+
+Then run this and follow the prompts:
 
 ```sh
-$ script/firebase-setup <YOUR-FIREBASE-APP-NAME>
+$ script/firebase-setup
 ```
 
-# Create React App
+Finally, you will need to set up an environment file containing various information and credentials. The file should be called `.env` and be located at the root of the project. The format is the familiar one for such files, with KEY=VALUE entries, one per line:
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+```sh
+REACT_APP_MASTER_CURRICULUM_FOLDER_ID=1wEfbo0L404VKNFpiOtOyQvllfiTs7CnO
+REACT_APP_BUGSNAG_API_KEY=14385c1ebd16bc84362e6ce4e3f14e92
+```
 
-## Available Scripts
+Aside from the entries above, which you can use as-is, you will need the following:
 
-In the project directory, you can run:
+* `REACT_APP_FIREBASE_API_KEY`: You can get this from the [Firebase console](https://console.firebase.google.com/), or by running `d/yarn.functions firebase setup:web`
+* `REACT_APP_FIREBASE_PROJECT_ID` is the ID of the Firebase project you created earlier. You can find it by accessing **Project settings** from the gear icon in the project dashboard; note that you are looking for the **Project ID** not the project name.
+* `REACT_APP_GOOGLE_CLIENT_ID` can be found at the [Google API Console](https://console.cloud.google.com/apis/credentials); there should be an entry under **OAuth 2.0 client IDs**, but if there isn’t, you can create one. Make sure that the client ID has `http://localhost:3000` in its **Authorized JavaScript origins**; if it doesn’t, you may need to create a new client ID and add that to the authorized origins when creating it.
 
-### `npm start`
+To start the application for development, run this:
 
-Runs the app in the development mode.<br>
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+```sh
+$ docker-compose up
+```
 
-The page will reload if you make edits.<br>
-You will also see any lint errors in the console.
+This will start a live-reloading development server for the React frontend, served using [`create-react-app`](https://facebook.github.io/create-react-app/docs/getting-started) on http://localhost:3000 . It will also start a [Firebase functions emulator](https://firebase.google.com/docs/functions/local-emulator) on http://localhost:5000 .
 
-### `npm test`
+# Deployment
 
-Launches the test runner in the interactive watch mode.<br>
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+The application is deployed to Firebase web hosting, using Travis CI to build and push the app. This all happens automatically any time code is merged into the `master` branch on GitHub.
 
-### `npm run build`
+The deployment process is configured in the `.travis.yml` file in the root of the project. Most deployment steps are run in Docker containers, minimizing the difference between the development environment and the build environment. Most environment variables used in production are configured in the project settings on travis-ci.com .
 
-Builds the app for production to the `build` folder.<br>
-It correctly bundles React in production mode and optimizes the build for the best performance.
+# Firebase Cloud Functions
 
-The build is minified and the filenames include the hashes.<br>
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (Webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/code-splitting
-
-### Analyzing the Bundle Size
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size
-
-### Making a Progressive Web App
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app
-
-### Advanced Configuration
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/advanced-configuration
-
-### Deployment
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/deployment
-
-### `npm run build` fails to minify
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify
+The project contains scaffolding for [Firebase Cloud Functions](https://firebase.google.com/docs/functions/), including an emulator for local development, as well as deploying functions as part of the deployment process. However, the use case for Cloud Functions—integration with Slack—did not end up being part of the initial development of this app, so the current functions formation is merely a “hello world”. Doing anything useful with this will probably require some additional research; in particular, I am not sure how the (client-side) Firebase session is propagated to functions, particularly in an emulated scenario.
