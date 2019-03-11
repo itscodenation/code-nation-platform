@@ -71,6 +71,7 @@ export default function LessonForm({lesson, onSubmit}) {
     [],
   );
 
+  const initialValues = defaults(extractedPlan, schema.default());
   return (
     <CenterAll centerText={false} lg={8}>
       {
@@ -87,7 +88,8 @@ export default function LessonForm({lesson, onSubmit}) {
                 <Col lg={8}>
                   <h3>Lesson Information</h3>
                   <Formik
-                    initialValues={defaults(extractedPlan, schema.default())}
+                    initialValues={initialValues}
+                    isInitialValid={schema.isValidSync(initialValues)}
                     validationSchema={schema}
                     onSubmit={values => onSubmit(values)}
                   >
