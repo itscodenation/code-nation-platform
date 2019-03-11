@@ -121,12 +121,7 @@ export default function LessonForm({lessonMaterials, onSubmit}) {
 
                   <Form.Group>
                     <Form.Label>
-                        Have any feedback? Sumbit it 
-                        <a 
-                          href={FEEDBACK_URL}
-                          rel="noopener noreferrer"
-                          target="_blank"> here
-                        </a>.           
+                      Have any feedback? Sumbit it <a href={FEEDBACK_URL} rel="noopener noreferrer" target="_blank">here</a>        
                     </Form.Label>
                   </Form.Group>
 
