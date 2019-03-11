@@ -1511,11 +1511,6 @@ asap@~2.0.3, asap@~2.0.6:
   resolved "https://registry.yarnpkg.com/asap/-/asap-2.0.6.tgz#e50347611d7e690943208bbdafebcbc2fb866d46"
   integrity sha1-5QNHYR1+aQlDIIu9r+vLwvuGbUY=
 
-ascii-fullwidth-halfwidth-convert@^0.1.1:
-  version "0.1.1"
-  resolved "https://registry.yarnpkg.com/ascii-fullwidth-halfwidth-convert/-/ascii-fullwidth-halfwidth-convert-0.1.1.tgz#782e73c87817ea130fb98d170b715a94a9779dc1"
-  integrity sha512-iZYyb/D5pxhfhO1cLL4ISe03V9R5PIFabsYIbAU0MVewJOgnBlbs/6IS2fiLDOxIhj183v0oM2AzWu3TJ9ygVw==
-
 ascli@~1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/ascli/-/ascli-1.0.1.tgz#bcfa5974a62f18e81cabaeb49732ab4a88f906bc"
