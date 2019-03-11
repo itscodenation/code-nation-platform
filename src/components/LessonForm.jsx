@@ -10,6 +10,8 @@ import * as yup from 'yup';
 import CenterAll from './layout/CenterAll';
 import LessonMaterials from './LessonMaterials';
 
+const FEEDBACK_URL = "https://goo.gl/forms/iNqC4DMcqeatcTbj1"
+
 const schema = yup.object().shape({
   doNowPrompt: yup.string()
     .default(''),
@@ -116,6 +118,17 @@ export default function LessonForm({lessonMaterials, onSubmit}) {
                     label="Exit ticket prompt"
                     name="exitTicketPrompt"
                   />
+
+                  <Form.Group>
+                    <Form.Label>
+                        Have any feedback? Sumbit it 
+                        <a 
+                          href={FEEDBACK_URL}
+                          rel="noopener noreferrer"
+                          target="_blank"> here
+                        </a>.           
+                    </Form.Label>
+                  </Form.Group>
 
                   <Form.Group>
                     <Button
