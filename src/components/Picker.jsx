@@ -17,25 +17,29 @@ export default function Picker({
   const getItemLabel = isFunction(itemLabel) ? itemLabel : property(itemLabel);
 
   return (
-    isNull(items) ? (
-      <p>Loading…</p>
-    ) : (
-        <CenterAll>
-          <h2>{header}</h2>
-          <ListGroup>
-            {map(
-              items,
-              item =>
-                <ListGroupItem
-                  action
-                  key={getItemKey(item)}
-                  onClick={() => onPick(item)}
-                >
-                  {getItemLabel(item)}
-                </ListGroupItem>
-            )}
-          </ListGroup>
-        </CenterAll>
-      )
+    <CenterAll>
+      {
+        isNull(items) ? (
+          <p>Loading…</p>
+        ) : (
+          <div>
+            <h2>{header}</h2>
+            <ListGroup>
+              {map(
+                items,
+                item =>
+                  <ListGroupItem
+                    action
+                    key={getItemKey(item)}
+                    onClick={() => onPick(item)}
+                  >
+                    {getItemLabel(item)}
+                  </ListGroupItem>
+              )}
+            </ListGroup>
+          </div>
+        )
+      }
+    </CenterAll>
   );
 }
