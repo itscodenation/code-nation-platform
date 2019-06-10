@@ -4,6 +4,7 @@ import {useTranslation} from 'react-i18next';
 
 export default function LessonMaterials({lessonMaterials}) {
   const {t} = useTranslation();
+  const FEEDBACK_URL = "https://forms.gle/NHsbdZnrU5PZCA9d6"
 
   return (
     <ul>
@@ -16,6 +17,11 @@ export default function LessonMaterials({lessonMaterials}) {
           </li>
         ))
       }
+      <li>
+        <a href={FEEDBACK_URL} rel="noopener noreferrer" target="_blank">
+          {t('materials.feedback')}
+        </a>
+      </li>
     </ul>
   );
 }
