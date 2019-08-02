@@ -25,6 +25,14 @@ In your Firebase project, you will need to set up a few things:
 * Enable Google authentication (navigate to **Authentication** &rarr; **Sign-in method** &rarr; **Google**)
 * Create a Cloud Firestore database (navigate to **Database** and click **Create database** in the Cloud Firestore section); you can leave the permissions in **test mode**
 
+You will also need to enable the Google APIs used by this project:
+
+* Navigate to the [Google Classroom API settings](https://console.cloud.google.com/apis/library/classroom.googleapis.com)
+* Select the name of the project you created in Firebase from the drop-down in the top bar (to the right of **Google Cloud Platform**)
+* Click the **Enable** button
+* Do the same for the [Google Drive API settings](https://console.cloud.google.com/apis/library/drive.googleapis.com)
+
+
 Then run this and follow the prompts:
 
 ```sh
@@ -42,7 +50,9 @@ Aside from the entries above, which you can use as-is, you will need the followi
 
 * `REACT_APP_FIREBASE_API_KEY`: You can get this from the [Firebase console](https://console.firebase.google.com/), or by running `d/yarn.functions firebase setup:web`
 * `REACT_APP_FIREBASE_PROJECT_ID` is the ID of the Firebase project you created earlier. You can find it by accessing **Project settings** from the gear icon in the project dashboard; note that you are looking for the **Project ID** not the project name.
-* `REACT_APP_GOOGLE_CLIENT_ID` can be found at the [Google API Console](https://console.cloud.google.com/apis/credentials); there should be an entry under **OAuth 2.0 client IDs**, but if there isn’t, you can create one. Make sure that the client ID has `http://localhost:3000` in its **Authorized JavaScript origins**; if it doesn’t, you may need to create a new client ID and add that to the authorized origins when creating it.
+* `REACT_APP_GOOGLE_CLIENT_ID` can be found at the [Google API Console](https://console.cloud.google.com/apis/credentials). First, select the name of the project you set up in Firebase from the dropdown in the top bar. Then look for the **OAuth 2.0 client IDs** section; there should already be an entry there, but if there isn’t, you can create one.
+    * Make sure that the client ID has `http://localhost:3000` in its **Authorized JavaScript origins**; if it doesn’t, you may need to create a new client ID and add that to the authorized origins when creating it.
+    * Follow the prompt to set up the OAuth consent screen
 
 To start the application for development, run this:
 
