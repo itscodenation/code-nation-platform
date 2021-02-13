@@ -1,11 +1,17 @@
 import Button from 'react-bootstrap/Button';
 import Col from 'react-bootstrap/Col';
 import Container from 'react-bootstrap/Container';
+import defaults from 'lodash-es/defaults';
 import Form from 'react-bootstrap/Form';
 import {Formik, Field} from 'formik';
-import React from 'react';
+import isNil from 'lodash-es/isNil';
+import noop from 'lodash-es/noop';
+import React, {useState} from 'react';
 import Row from 'react-bootstrap/Row';
+import {useAsyncEffect} from 'use-async-effect';
 import * as yup from 'yup';
+
+import {extractLessonPlanFromSlides} from '../clients/google';
 
 import CenterAll from './layout/CenterAll';
 import LessonMaterials from './LessonMaterials';
@@ -56,80 +62,96 @@ function LessonFormField({
   );
 }
 
-export default function LessonForm({lessonMaterials, onSubmit}) {
+export default function LessonForm({lesson, onSubmit}) {
+  const [extractedPlan, setExtractedPlan] = useState();
+
+  useAsyncEffect(
+    async () => setExtractedPlan(await extractLessonPlanFromSlides(lesson)),
+    noop,
+    [],
+  );
+
+  const initialValues = defaults(extractedPlan, schema.default());
   return (
     <CenterAll centerText={false} lg={8}>
-      <Container>
-        <Row>
-          <Col lg={4}>
-            <h3>Lesson materials</h3>
-            <LessonMaterials lessonMaterials={lessonMaterials} />
-          </Col>
+      {
+        isNil(extractedPlan) ?
+          'Loading…' :
+          (
+            <Container>
+              <Row>
+                <Col lg={4}>
+                  <h3>Lesson materials</h3>
+                  <LessonMaterials lessonMaterials={lesson.materials} />
+                </Col>
 
-          <Col lg={8}>
-            <h3>Lesson Information</h3>
-            <Formik
-              initialValues={schema.default()}
-              validationSchema={schema}
-              onSubmit={values => onSubmit(values)}
-            >
-              {({handleSubmit, isValid, isSubmitting}) => (
-                <Form noValidate onSubmit={handleSubmit}>
-                  <Field
-                    as="textarea"
-                    component={LessonFormField}
-                    label="Do Now prompt"
-                    name="doNowPrompt"
-                  />
+                <Col lg={8}>
+                  <h3>Lesson Information</h3>
+                  <Formik
+                    initialValues={initialValues}
+                    isInitialValid={schema.isValidSync(initialValues)}
+                    validationSchema={schema}
+                    onSubmit={values => onSubmit(values)}
+                  >
+                    {({handleSubmit, isValid, isSubmitting}) => (
+                      <Form noValidate onSubmit={handleSubmit}>
+                        <Field
+                          as="textarea"
+                          component={LessonFormField}
+                          label="Do Now prompt"
+                          name="doNowPrompt"
+                        />
 
-                  <Field
-                    component={LessonFormField}
-                    label="Link to starter code for Do Now"
-                    name="doNowStarterCodeUrl"
-                    type="text"
-                  />
+                        <Field
+                          component={LessonFormField}
+                          label="Link to starter code for Do Now"
+                          name="doNowStarterCodeUrl"
+                          type="text"
+                        />
 
-                  <Field
-                    as="textarea"
-                    component={LessonFormField}
-                    label="Learning objective"
-                    name="objective"
-                  />
+                        <Field
+                          as="textarea"
+                          component={LessonFormField}
+                          label="Learning objective"
+                          name="objective"
+                        />
 
-                  <Field
-                    as="textarea"
-                    component={LessonFormField}
-                    label="Vocabulary"
-                    name="vocabulary"
-                  />
+                        <Field
+                          as="textarea"
+                          component={LessonFormField}
+                          label="Vocabulary"
+                          name="vocabulary"
+                        />
 
-                  <Field
-                    component={LessonFormField}
-                    label="Link to starter code for Independent Practice"
-                    name="independentPracticeStarterCodeUrl"
-                    type="text"
-                  />
+                        <Field
+                          component={LessonFormField}
+                          label="Link to starter code for Independent Practice"
+                          name="independentPracticeStarterCodeUrl"
+                          type="text"
+                        />
 
-                  <Field
-                    as="textarea"
-                    component={LessonFormField}
-                    label="Exit ticket prompt"
-                    name="exitTicketPrompt"
-                  />
+                        <Field
+                          as="textarea"
+                          component={LessonFormField}
+                          label="Exit ticket prompt"
+                          name="exitTicketPrompt"
+                        />
 
-                  <Form.Group>
-                    <Button
-                      disabled={!isValid || isSubmitting}
-                      type="submit"
-                      variant="primary"
-                    >Continue</Button>
-                  </Form.Group>
-                </Form>
-              )}
-            </Formik>
-          </Col>
-        </Row>
-      </Container>
+                        <Form.Group>
+                          <Button
+                            disabled={!isValid || isSubmitting}
+                            type="submit"
+                            variant="primary"
+                          >Continue</Button>
+                        </Form.Group>
+                      </Form>
+                    )}
+                  </Formik>
+                </Col>
+              </Row>
+            </Container>
+          )
+      }
     </CenterAll>
-  );
-}
+    );
+  }
